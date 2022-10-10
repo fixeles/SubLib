@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 2626501fbf6442d4d8e0f8d3d62b10af
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - <InventoryUpgrade>k__BackingField: {fileID: 11400000, guid: a238ebc8948ca0547b433c32d4ffed87,
+      type: 2}
+  - <SpeedUpgrade>k__BackingField: {fileID: 11400000, guid: 846d9a131b964f0488b738bd53d07634,
+      type: 2}
+  - _upgradeParticles: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
