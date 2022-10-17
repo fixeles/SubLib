@@ -43,6 +43,7 @@ public class InventoryItem : MonoBehaviour
     {
         if (_magnet != null) _magnet.Reset();
         await transform.RescaleAsync(transform.localScale, Vector3.zero, default, 0.5f);
+        transform.localPosition = Vector3.zero;
         if (destroy) Destroy(gameObject);
     }
 
@@ -75,5 +76,5 @@ public class InventoryItem : MonoBehaviour
 
 public enum ItemType
 {
-   Item
+    Item
 }

@@ -26,7 +26,7 @@ public class Player : Unit
         var items = new List<InventoryItem>();
         for (int i = 0; i < from.Items.Count; i++)
         {
-            var item = from.GetLastItem();
+            var item = from.GetLastItem(out _);
             if (item == null) continue;
             items.Add(item);
 

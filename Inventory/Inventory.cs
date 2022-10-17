@@ -7,23 +7,21 @@ public class Inventory : MonoBehaviour
 {
     public event System.Action OnAddItem;
     public event System.Action OnRemoveItem;
+    
     [field: SerializeField, Min(0.5f)] public float TransitionDuration { get; private set; } = 0.5f;
     [field: SerializeField] public TransitionCurves Curves { get; set; }
-    [SerializeField] private bool _perItemLimit;
-    [SerializeField] private int _defaultSize;
-    [SerializeField] bool _dynamic;
+    [field: SerializeField] public bool LimitTypeSpase { get; private set; }
+    [field: SerializeField] public int DefaultSize { get; private set; }
+    [field: SerializeField] public bool Dynamic { get; private set; }
 
 
     public List<ItemType> AwailableTypes;
 
     [SerializeField] private List<InventoryItem> _items;
-    private List<Transform> _positions;
+    [SerializeField, ReadOnly] private List<Transform> _positions;
 
 
     public List<InventoryItem> Items => _items;
-    public int DefaultSize => _defaultSize;
-    public bool PerItemLimit => _perItemLimit;
-    public bool Dynamic => _dynamic;
 
     [ExecuteInEditMode]
     private void OnEnable()
@@ -50,12 +48,12 @@ public class Inventory : MonoBehaviour
         if (!AwailableTypes.Contains(item.Type)) return false;
 
         int slotIndex;
-        if (_perItemLimit && !HasTypeSpace(item.Type)) return false;
+        if (LimitTypeSpase && !HasTypeSpace(item.Type)) return false;
 
         if (!HasEmptySlot(out slotIndex)) return false;
 
         _items[slotIndex] = item;
-        item.transform.parent = _positions[slotIndex];
+        item.transform.parent = _positions.Count > 0 ? _positions[slotIndex] : transform;
         OnAddItem?.Invoke();
 
         return true;
@@ -65,7 +63,7 @@ public class Inventory : MonoBehaviour
     {
         if (!targetInventory.AwailableTypes.Contains(itemType)) return false;
 
-        if (targetInventory.PerItemLimit && !targetInventory.HasTypeSpace(itemType)) return false;
+        if (targetInventory.LimitTypeSpase && !targetInventory.HasTypeSpace(itemType)) return false;
         else if (!targetInventory.HasEmptySlot(out _)) return false;
 
         InventoryItem removedItem;
@@ -131,6 +129,19 @@ public class Inventory : MonoBehaviour
         return true;
     }
 
+    public bool RemoveItem(out InventoryItem removedItem)
+    {
+        int itemIndex;
+        removedItem = GetLastItem(out itemIndex);
+        if (removedItem == null) return false;
+
+        removedItem = _items[itemIndex];
+        _items[itemIndex] = null;
+        OnRemoveItem?.Invoke();
+        TrySort();
+        return true;
+    }
+
     public int GetItemsCount(ItemType type)
     {
         int count = 0;
@@ -185,15 +196,17 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
-    public InventoryItem GetLastItem()
+    public InventoryItem GetLastItem(out int index)
     {
         for (int i = _items.Count - 1; i >= 0; i--)
         {
             if (_items[i] != null)
             {
+                index = i;
                 return _items[i];
             }
         }
+        index = -1;
         return null;
     }
 
@@ -221,12 +234,12 @@ public class Inventory : MonoBehaviour
 
     protected virtual void Start()
     {
-        SizeUpdate(_defaultSize);
+        SizeUpdate(DefaultSize);
     }
 
     private void Awake()
     {
-        _positions = gameObject.GetActiveChilds();
+        if (TryGetComponent<LayoutGroup3D>(out _)) _positions = gameObject.GetActiveChilds();
         if (_items == null) _items = new List<InventoryItem>();
         for (int i = 0; i < _positions.Count; i++)
         {

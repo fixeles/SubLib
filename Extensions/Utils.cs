@@ -32,6 +32,15 @@ namespace Utils
             return displace;
         }
     }
+
+    public static class BaseUtils
+    {
+        public static bool Roll(int chance)
+        {
+            int roll = Random.Range(0, 101);
+            return roll <= chance;
+        }
+    }
 }
 
 
