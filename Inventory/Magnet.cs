@@ -5,7 +5,7 @@ public class Magnet : MonoBehaviour
     [SerializeField] private AnimationCurve _forceCurve;
     [SerializeField, ReadOnly] private Transform _target;
     private const float ForceMultiplier = 15;
-    private const float Height = 2.5f;
+    private const float Height = 3.5f;
     private float _force;
     private Vector3 _lastPosition;
     private Quaternion _lastRotation;

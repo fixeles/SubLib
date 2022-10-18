@@ -7,6 +7,7 @@ using ExtensionsMain;
 
 public class Enemy : Unit
 {
+    public static event System.Action OnKillEvent;
     private static int _lastUnitID;
     [SerializeField] private NavMeshAgent _agent;
     [field: SerializeField] public Transform AimPoint { get; private set; }
@@ -41,6 +42,7 @@ public class Enemy : Unit
 
     private async void Death()
     {
+        OnKillEvent?.Invoke();
         SpawnMoney();
         Animator.SetTrigger(AnimationType.Death.ToString());
         _agent.isStopped = true;
