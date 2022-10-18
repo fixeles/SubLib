@@ -21,6 +21,11 @@ public class Ally : Unit
         base.Update();
     }
 
+    private void OnDestroy()
+    {
+        ID = 0;
+    }
+
     protected override void InitStates()
     {
         Dictionary<UnitState, IState> states = new();
