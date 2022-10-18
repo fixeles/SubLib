@@ -1,8 +1,8 @@
 #if UNITY_EDITOR
 using UnityEditor;
-#endif
 
 [InitializeOnLoad]
+#endif
 public class ComponentInitializer
 {
 #if UNITY_EDITOR

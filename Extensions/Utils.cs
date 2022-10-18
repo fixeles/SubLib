@@ -43,7 +43,6 @@ namespace Utils
         }
     }
 
-
     public static class EditorUtils
     {
         /// <summary>
@@ -53,11 +52,17 @@ namespace Utils
         /// <returns></returns>
         public static T[] GetAllInstances<T>() where T : ScriptableObject
         {
+#if UNITY_EDITOR
             return UnityEditor.AssetDatabase.FindAssets($"t: {typeof(T).Name}").ToArray()
                         .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
                         .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<T>)
                         .ToArray();
+#endif
+            return null;
         }
+
+
+
     }
 }
 
