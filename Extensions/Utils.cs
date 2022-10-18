@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ExtensionsMain;
+using System.Linq;
 
 namespace Utils
 {
@@ -39,6 +40,23 @@ namespace Utils
         {
             int roll = Random.Range(0, 101);
             return roll <= chance;
+        }
+    }
+
+
+    public static class EditorUtils
+    {
+        /// <summary>
+        /// Get all instances of scriptable objects with given type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T[] GetAllInstances<T>() where T : ScriptableObject
+        {
+            return UnityEditor.AssetDatabase.FindAssets($"t: {typeof(T).Name}").ToArray()
+                        .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
+                        .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<T>)
+                        .ToArray();
         }
     }
 }
