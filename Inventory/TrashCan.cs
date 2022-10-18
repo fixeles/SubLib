@@ -7,7 +7,7 @@ public class TrashCan : InventoryReceiver
     override protected void Start()
     {
         base.Start();
-        _clearDelayTime = (int)(TransitionDuration * 1000);
+        _clearDelayTime = (int)(Curves.TransitionDuration * 1000);
         OnAddItem += ClearReceiver;
     }
 

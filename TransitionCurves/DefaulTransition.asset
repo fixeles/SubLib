@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72852224573e1cd46be850a8237e44c4, type: 3}
   m_Name: DefaulTransition
   m_EditorClassIdentifier: 
+  <TransitionDuration>k__BackingField: 0.5
   <MoveCurve>k__BackingField:
     serializedVersion: 2
     m_Curve:

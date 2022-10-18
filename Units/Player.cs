@@ -35,7 +35,7 @@ public class Player : Unit
             await Task.Delay(50);
         }
 
-        await Task.Delay((int)(Inventory.TransitionDuration * 1000));
+        await Task.Delay((int)(Inventory.Curves.TransitionDuration * 1000));
         foreach (var item in items)
         {
             Destroy(item.gameObject);

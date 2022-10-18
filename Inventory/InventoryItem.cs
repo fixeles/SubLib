@@ -27,7 +27,7 @@ public class InventoryItem : MonoBehaviour
 
         if (!inventory.Add(this)) return false;
 
-        await transform.CurveMoveAsync(transform.parent, inventory.Curves, inventory.TransitionDuration, _moveCTS.Token);
+        await transform.CurveMoveAsync(transform.parent, inventory.Curves, _moveCTS.Token);
         if (_moveCTS != null) _moveCTS.Dispose();
         _moveCTS = null;
 

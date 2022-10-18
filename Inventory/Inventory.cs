@@ -8,7 +8,6 @@ public class Inventory : MonoBehaviour
     public event System.Action OnAddItem;
     public event System.Action OnRemoveItem;
     
-    [field: SerializeField, Min(0.5f)] public float TransitionDuration { get; private set; } = 0.5f;
     [field: SerializeField] public TransitionCurves Curves { get; set; }
     [field: SerializeField] public bool LimitTypeSpase { get; private set; }
     [field: SerializeField] public int DefaultSize { get; private set; }

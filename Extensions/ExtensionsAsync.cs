@@ -113,19 +113,19 @@ namespace ExtensionsAsync
         }
 
         public static async Task CurveMoveAsync(this Transform transform, Transform target,
-        TransitionCurves curves, float duration = 0.1f, CancellationToken token = default, bool rotate = true)
+        TransitionCurves curves, CancellationToken token = default, bool rotate = true)
         {
             float transition = 0;
-            duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
             int sessionID = AsyncCancellation.SessionID;
 
             Vector3 startPos = transform.position;
             Quaternion startRot = transform.rotation;
             Vector3 startScale = transform.localScale;
+
             while (transition < 1)
             {
                 if (token.IsCancellationRequested || AsyncCancellation.IsCancelled(sessionID)) return;
-                transition += Time.deltaTime / duration;
+                transition += Time.deltaTime / curves.TransitionDuration;
 
                 var nextPosition = Vector3.Lerp(startPos, target.position, curves.MoveCurve.Evaluate(transition));
                 nextPosition.y = nextPosition.y + curves.HeightCurve.Evaluate(transition);
