@@ -1,12 +1,8 @@
-#if UNITY_EDITOR
 using UnityEditor;
 
 [InitializeOnLoad]
-#endif
 public class ComponentInitializer
 {
-#if UNITY_EDITOR
-
     static ComponentInitializer()
     {
         ObjectFactory.componentWasAdded += ComponentsAutoInit;
@@ -28,11 +24,4 @@ public class ComponentInitializer
         ObjectFactory.componentWasAdded -= ComponentsAutoInit;
         EditorApplication.quitting -= OnEditorQuiting;
     }
-
-#endif
-}
-
-public interface IAutoInit
-{
-    public void AutoInit();
 }
