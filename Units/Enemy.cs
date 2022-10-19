@@ -59,9 +59,10 @@ public class Enemy : Unit
 
     private void SpawnMoney()
     {
-        for (int i = 0; i < Random.Range(5, 11); i++)
+        for (int i = 0; i < 2; i++)
         {
-            PoolContainer.MoneyPool.Get(transform.position + Utils.Vector3.Displace(0.5f), transform.rotation.RandomRotation());
+            PoolContainer.MoneyPool.Get(transform.position + Utils.Vector3.Displace(0.5f),
+                transform.rotation.RandomRotation());
         }
     }
 }
