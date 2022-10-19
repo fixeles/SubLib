@@ -23,6 +23,7 @@ public class InventoryItem : MonoBehaviour
             _moveCTS.Cancel();
             await Task.Yield();
         }
+
         _moveCTS = new CancellationTokenSource();
 
         if (!inventory.Add(this)) return false;
@@ -36,13 +37,14 @@ public class InventoryItem : MonoBehaviour
             _magnet.Target = transform.parent;
             if (!inventory.Dynamic) _magnet.Reset();
         }
+
         return true;
     }
 
     public async Task Hide(bool destroy = false)
     {
+        await transform.RescaleAsync(transform.localScale, Vector3.zero, default, 0.2f);
         if (_magnet != null) _magnet.Reset();
-        await transform.RescaleAsync(transform.localScale, Vector3.zero, default, 0.5f);
         transform.localPosition = Vector3.zero;
         if (destroy) Destroy(gameObject);
     }
