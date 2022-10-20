@@ -13,12 +13,15 @@ namespace ExtensionsAsync
             await renderer.RecolorAsync(Color.black, token, duration / 2);
         }
 
-        public static async Task RecolorAsync(this Renderer renderer, Color target, CancellationToken token, float duration = 0.1f)
+        public static async Task RecolorAsync(this Renderer renderer, Color target, CancellationToken token,
+            float duration = 0.1f)
         {
             float transition = 0;
             duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
             int sessionID = AsyncCancellation.SessionID;
-            int propertyID = renderer.material.shader.GetPropertyNameId(renderer.material.shader.FindPropertyIndex("_EmissionColor"));
+            int propertyID =
+                renderer.material.shader.GetPropertyNameId(
+                    renderer.material.shader.FindPropertyIndex("_EmissionColor"));
             Color startColor = renderer.material.GetColor(propertyID);
 
             while (transition < 1)
@@ -32,7 +35,8 @@ namespace ExtensionsAsync
             }
         }
 
-        public static async Task MoveAsync(this Transform transform, Vector3 target, CancellationToken token, float duration = 0.1f)
+        public static async Task MoveAsync(this Transform transform, Vector3 target, CancellationToken token,
+            float duration = 0.1f)
         {
             float transition = 0;
             duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
@@ -50,7 +54,8 @@ namespace ExtensionsAsync
             }
         }
 
-        public static async Task LerpAsync(this Transform transform, Transform target, CancellationToken token, float duration = 0.1f, bool rotate = true)
+        public static async Task LerpAsync(this Transform transform, Transform target, CancellationToken token,
+            float duration = 0.1f, bool rotate = true)
         {
             float transition = 0;
             duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
@@ -68,39 +73,13 @@ namespace ExtensionsAsync
 
                 if (AsyncCancellation.IsCancelled(sessionID)) return;
             }
+
             transform.position = target.position;
             if (rotate) transform.rotation = target.rotation;
         }
 
-        public static async Task ArcLerpAsync(this Transform transform, Transform target, CancellationToken token, float height = 5, float duration = 0.1f, bool rotate = true)
-        {
-            float transition = 0;
-            duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
-            int sessionID = AsyncCancellation.SessionID;
-
-            Vector3 startPos = transform.position;
-            Quaternion startRot = transform.rotation;
-            while (transition < 1)
-            {
-                if (token.IsCancellationRequested) return;
-                transition += Time.deltaTime / duration;
-
-                Vector3 thirdPoint = new Vector3(target.position.x, target.position.y + height, target.position.z);
-
-                Vector3 firstLerp = transform.position = Vector3.Lerp(startPos, thirdPoint, transition);
-                Vector3 secondLerp = transform.position = Vector3.Lerp(thirdPoint, target.position, transition);
-
-                transform.position = Vector3.Lerp(firstLerp, secondLerp, transition);
-                if (rotate) transform.rotation = Quaternion.Lerp(startRot, target.rotation, transition);
-                await Task.Yield();
-
-                if (AsyncCancellation.IsCancelled(sessionID)) return;
-            }
-            transform.position = target.position;
-            if (rotate) transform.rotation = target.rotation;
-        }
-
-        public static async Task RescaleAsync(this Transform transform, Vector3 from, Vector3 to, CancellationToken token, float duration = 0.1f)
+        public static async Task RescaleAsync(this Transform transform, Vector3 from, Vector3 to,
+            CancellationToken token, float duration = 0.1f)
         {
             float transition = 0;
             while (transition < 1)
@@ -113,22 +92,21 @@ namespace ExtensionsAsync
         }
 
         public static async Task CurveMoveAsync(this Transform transform, Transform target,
-        TransitionCurves curves, CancellationToken token = default, bool rotate = true)
+            TransitionCurves curves, CancellationToken token = default, bool rotate = true)
         {
             float transition = 0;
             int sessionID = AsyncCancellation.SessionID;
 
             Vector3 startPos = transform.position;
             Quaternion startRot = transform.rotation;
-            Vector3 startScale = transform.localScale;
 
             while (transition < 1)
             {
                 if (token.IsCancellationRequested || AsyncCancellation.IsCancelled(sessionID)) return;
-                transition += Time.deltaTime / curves.TransitionDuration;
+                transition += Time.deltaTime / curves.Duration;
 
                 var nextPosition = Vector3.Lerp(startPos, target.position, curves.MoveCurve.Evaluate(transition));
-                nextPosition.y = nextPosition.y + curves.HeightCurve.Evaluate(transition);
+                nextPosition.y += curves.HeightCurve.Evaluate(transition);
                 transform.position = nextPosition;
 
                 float scaleValue = curves.ScaleCurve.Evaluate(transition);
@@ -137,27 +115,26 @@ namespace ExtensionsAsync
                 if (rotate) transform.rotation = Quaternion.Lerp(startRot, target.rotation, transition);
                 await Task.Yield();
             }
+
             transform.position = target.position;
             if (rotate) transform.rotation = target.rotation;
         }
 
         public static async Task CurveMoveAsync(this Transform transform, Vector3 targetPos, Quaternion targetRotation,
-                TransitionCurves curves, float duration = 0.1f, CancellationToken token = default, bool rotate = true)
+            TransitionCurves curves, CancellationToken token = default, bool rotate = true)
         {
             float transition = 0;
-            duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
             int sessionID = AsyncCancellation.SessionID;
 
             Vector3 startPos = transform.position;
             Quaternion startRot = transform.rotation;
-            Vector3 startScale = transform.localScale;
             while (transition < 1)
             {
                 if (token.IsCancellationRequested || AsyncCancellation.IsCancelled(sessionID)) return;
-                transition += Time.deltaTime / duration;
+                transition += Time.deltaTime / curves.Duration;
 
                 var nextPosition = Vector3.Lerp(startPos, targetPos, curves.MoveCurve.Evaluate(transition));
-                nextPosition.y = nextPosition.y + curves.HeightCurve.Evaluate(transition);
+                nextPosition.y += curves.HeightCurve.Evaluate(transition);
                 transform.position = nextPosition;
 
                 float scaleValue = curves.ScaleCurve.Evaluate(transition);
@@ -166,11 +143,13 @@ namespace ExtensionsAsync
                 transform.rotation = Quaternion.Lerp(startRot, targetRotation, transition);
                 await Task.Yield();
             }
+
             transform.position = targetPos;
             if (rotate) transform.rotation = targetRotation;
         }
 
-        public static async Task MoveAsync(this Transform transform, Transform target, int speed, CancellationToken token = default)
+        public static async Task MoveAsync(this Transform transform, Transform target, int speed,
+            CancellationToken token = default)
         {
             float transition = 0;
             int sessionID = AsyncCancellation.SessionID;
@@ -187,8 +166,5 @@ namespace ExtensionsAsync
                 if (AsyncCancellation.IsCancelled(sessionID)) return;
             }
         }
-
     }
 }
-
-
