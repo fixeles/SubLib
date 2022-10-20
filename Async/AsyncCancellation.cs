@@ -1,32 +1,31 @@
-using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class AsyncCancellation : MonoBehaviour
 {
-    private static List<CancellationTokenSource> _ctsPool = new List<CancellationTokenSource>();
-
-    public static CancellationToken Token => _ctsPool[_ctsPool.Count - 1].Token;
-    public static int SessionID { get; private set; }
+    private static CancellationTokenSource _cts;
+    public static CancellationToken Token => _cts.Token;
 
     private void Awake()
     {
-        if (_ctsPool.Count != 0)
+        _cts?.Cancel();
+        _cts = new();
+    }
+
+    public static bool IsCancelled(params CancellationToken[] tokens)
+    {
+        for (int i = 0; i < tokens.Length; i++)
         {
-            _ctsPool[_ctsPool.Count - 1].Cancel();
-            SessionID++;
+            if (tokens[i].IsCancellationRequested) return true;
         }
-        _ctsPool.Add(new CancellationTokenSource());
+
+        return false;
     }
 
-    public static bool IsCancelled(int sessionID)
+    private async void OnDestroy()
     {
-        return _ctsPool[sessionID].Token.IsCancellationRequested;
+        await Task.Yield();
+        if (!Application.isPlaying) _cts.Cancel();
     }
-
-    private void OnDestroy()
-    {
-        if (!Application.isPlaying) _ctsPool[_ctsPool.Count - 1].Cancel();
-    }
-
 }

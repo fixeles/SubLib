@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
 using ExtensionsMain;
+using UnityEngine.UI;
 
 namespace ExtensionsAsync
 {
@@ -16,9 +17,10 @@ namespace ExtensionsAsync
         public static async Task RecolorAsync(this Renderer renderer, Color target, CancellationToken token,
             float duration = 0.1f)
         {
+            var levelToken = AsyncCancellation.Token;
+
             float transition = 0;
             duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
-            int sessionID = AsyncCancellation.SessionID;
             int propertyID =
                 renderer.material.shader.GetPropertyNameId(
                     renderer.material.shader.FindPropertyIndex("_EmissionColor"));
@@ -26,52 +28,64 @@ namespace ExtensionsAsync
 
             while (transition < 1)
             {
-                if (token.IsCancellationRequested) return;
+                if (AsyncCancellation.IsCancelled(token, levelToken)) return;
                 transition += Time.deltaTime / duration;
                 renderer.material.SetColor(propertyID, Color.Lerp(startColor, target, transition));
 
                 await Task.Yield();
-                if (AsyncCancellation.IsCancelled(sessionID)) return;
+            }
+        }
+
+        public static async Task FadeAsync(this Image image, CancellationToken token, float duration = 0.1f)
+        {
+            duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
+            var levelToken = AsyncCancellation.Token;
+            Color color = Color.white;
+            while (color.a > 0)
+            {
+                if (levelToken.IsCancellationRequested) return;
+                if (token.IsCancellationRequested) return;
+                color.a -= Time.deltaTime / duration;
+                image.color = color;
+                await Task.Yield();
+                // if (AsyncCancellation.IsCancelled(sessionID)) return;
             }
         }
 
         public static async Task MoveAsync(this Transform transform, Vector3 target, CancellationToken token,
             float duration = 0.1f)
         {
+            var levelToken = AsyncCancellation.Token;
             float transition = 0;
             duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
-            int sessionID = AsyncCancellation.SessionID;
             Vector3 startPos = transform.position;
 
             while (transition < 1)
             {
-                if (token.IsCancellationRequested) return;
+                if (AsyncCancellation.IsCancelled(token, levelToken)) return;
                 transition += Time.deltaTime / duration;
                 transform.position = Vector3.Lerp(startPos, target, transition);
 
                 await Task.Yield();
-                if (AsyncCancellation.IsCancelled(sessionID)) return;
             }
         }
 
         public static async Task LerpAsync(this Transform transform, Transform target, CancellationToken token,
             float duration = 0.1f, bool rotate = true)
         {
+            var levelToken = AsyncCancellation.Token;
             float transition = 0;
             duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
-            int sessionID = AsyncCancellation.SessionID;
 
             Vector3 startPos = transform.position;
             Quaternion startRot = transform.rotation;
             while (transition < 1)
             {
-                if (token.IsCancellationRequested) return;
+                if (AsyncCancellation.IsCancelled(token, levelToken)) return;
                 transition += Time.deltaTime / duration;
                 transform.position = Vector3.Lerp(startPos, target.position, transition);
                 if (rotate) transform.rotation = Quaternion.Lerp(startRot, target.rotation, transition);
                 await Task.Yield();
-
-                if (AsyncCancellation.IsCancelled(sessionID)) return;
             }
 
             transform.position = target.position;
@@ -94,15 +108,15 @@ namespace ExtensionsAsync
         public static async Task CurveMoveAsync(this Transform transform, Transform target,
             TransitionCurves curves, CancellationToken token = default, bool rotate = true)
         {
+            var levelToken = AsyncCancellation.Token;
             float transition = 0;
-            int sessionID = AsyncCancellation.SessionID;
 
             Vector3 startPos = transform.position;
             Quaternion startRot = transform.rotation;
 
             while (transition < 1)
             {
-                if (token.IsCancellationRequested || AsyncCancellation.IsCancelled(sessionID)) return;
+                if (AsyncCancellation.IsCancelled(token, levelToken)) return;
                 transition += Time.deltaTime / curves.Duration;
 
                 var nextPosition = Vector3.Lerp(startPos, target.position, curves.MoveCurve.Evaluate(transition));
@@ -120,14 +134,14 @@ namespace ExtensionsAsync
         public static async Task CurveMoveAsync(this Transform transform, Vector3 targetPos, Quaternion targetRotation,
             TransitionCurves curves, CancellationToken token = default, bool rotate = true)
         {
+            var levelToken = AsyncCancellation.Token;
             float transition = 0;
-            int sessionID = AsyncCancellation.SessionID;
 
             Vector3 startPos = transform.position;
             Quaternion startRot = transform.rotation;
             while (transition < 1)
             {
-                if (token.IsCancellationRequested || AsyncCancellation.IsCancelled(sessionID)) return;
+                if (AsyncCancellation.IsCancelled(token, levelToken)) return;
                 transition += Time.deltaTime / curves.Duration;
 
                 var nextPosition = Vector3.Lerp(startPos, targetPos, curves.MoveCurve.Evaluate(transition));
@@ -145,19 +159,18 @@ namespace ExtensionsAsync
         public static async Task MoveAsync(this Transform transform, Transform target, int speed,
             CancellationToken token = default)
         {
+            var levelToken = AsyncCancellation.Token;
             float transition = 0;
-            int sessionID = AsyncCancellation.SessionID;
             Vector3 startPos = transform.position;
 
             while (transition < 1)
             {
-                if (token.IsCancellationRequested) return;
+                if (AsyncCancellation.IsCancelled(token, levelToken)) return;
                 float timeLeft = transform.DistanceTo(target) / speed;
                 transition += Time.deltaTime / timeLeft;
                 transform.position = Vector3.Lerp(startPos, target.position, transition);
 
                 await Task.Yield();
-                if (AsyncCancellation.IsCancelled(sessionID)) return;
             }
         }
     }

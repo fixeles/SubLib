@@ -13,6 +13,7 @@ public class Timer
     private System.Action _action;
     private static bool _isStarted;
     private int frequencyMS;
+
     public int FrequencyMS
     {
         get => frequencyMS;
@@ -49,18 +50,17 @@ public class Timer
     private static async void StartTimers()
     {
         _isStarted = true;
-        int sessisonID = AsyncCancellation.SessionID;
+        var token = AsyncCancellation.Token;
 
         while (true)
         {
             await Task.Delay(StepMS);
-            if (AsyncCancellation.IsCancelled(sessisonID))
+            if (token.IsCancellationRequested)
             {
                 ActiveTimers = new List<Timer>();
                 _isStarted = false;
                 return;
             }
-
 
             for (int i = ActiveTimers.Count - 1; i >= 0; i--)
             {
@@ -85,6 +85,7 @@ public class Timer
             _currentTime -= FrequencyMS;
             _action.Invoke();
         }
+
         return true;
     }
 
