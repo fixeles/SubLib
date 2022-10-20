@@ -36,5 +36,6 @@ public enum AnimationType
 {
     Idle,
     Run,
-    Death
+    Death,
+    Attack
 }
