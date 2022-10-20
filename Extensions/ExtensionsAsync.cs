@@ -115,9 +115,6 @@ namespace ExtensionsAsync
                 if (rotate) transform.rotation = Quaternion.Lerp(startRot, target.rotation, transition);
                 await Task.Yield();
             }
-
-            transform.position = target.position;
-            if (rotate) transform.rotation = target.rotation;
         }
 
         public static async Task CurveMoveAsync(this Transform transform, Vector3 targetPos, Quaternion targetRotation,
@@ -143,9 +140,6 @@ namespace ExtensionsAsync
                 transform.rotation = Quaternion.Lerp(startRot, targetRotation, transition);
                 await Task.Yield();
             }
-
-            transform.position = targetPos;
-            if (rotate) transform.rotation = targetRotation;
         }
 
         public static async Task MoveAsync(this Transform transform, Transform target, int speed,
