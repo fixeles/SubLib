@@ -29,7 +29,8 @@ public class Statable
 public enum UnitState
 {
     Idle,
-    Run
+    Run,
+    Death
 }
 
 public enum AnimationType
