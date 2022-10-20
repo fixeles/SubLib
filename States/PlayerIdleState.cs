@@ -2,7 +2,6 @@ public struct PlayerIdleState : IState
 {
     public void Enter()
     {
-        Player.Instance.Animator.SetBool(AnimationType.Run.ToString(), false);
     }
 
     public void Update()
