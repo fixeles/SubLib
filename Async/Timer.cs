@@ -91,6 +91,6 @@ public class Timer
 
     private void Destroy(int index)
     {
-        ActiveTimers.RemoveAt(index);
+        ActiveTimers.Remove(this);
     }
 }

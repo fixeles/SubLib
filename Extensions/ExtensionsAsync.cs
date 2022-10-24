@@ -105,6 +105,20 @@ namespace ExtensionsAsync
             }
         }
 
+        public static async Task HorizontalSoftLookAtAsync(this Transform transform, Transform target, float duration,
+            float rotationSpeed = 5, params CancellationToken[] tokens)
+        {
+            float timeElapsed = 0;
+            while (timeElapsed < duration)
+            {
+                timeElapsed += Time.deltaTime;
+
+                transform.HorizontalSoftLookAt(target.position, rotationSpeed);
+                await Task.Yield();
+                if (AsyncCancellation.IsCancelled(tokens)) return;
+            }
+        }
+
         public static async Task CurveMoveAsync(this Transform transform, Transform target,
             TransitionCurves curves, CancellationToken token = default, bool rotate = true)
         {
@@ -131,7 +145,8 @@ namespace ExtensionsAsync
             }
         }
 
-        public static async Task CurveMoveAsync(this Transform transform, Vector3 targetPos, Quaternion targetRotation,
+        public static async Task CurveMoveAsync(this Transform transform, Vector3 targetPos,
+            Quaternion targetRotation,
             TransitionCurves curves, CancellationToken token = default, bool rotate = true)
         {
             var levelToken = AsyncCancellation.Token;

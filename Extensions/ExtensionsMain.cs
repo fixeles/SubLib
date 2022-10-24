@@ -72,12 +72,13 @@ namespace ExtensionsMain
             transform.rotation = rotation;
         }
 
-        public static void HorizontalSoftLookAt(this Transform transform, Vector3 target, float rotationSpeed = 5)
+        public static Quaternion HorizontalSoftLookAt(this Transform transform, Vector3 target, float rotationSpeed = 5)
         {
             target.y = transform.position.y;
             Vector3 lookVector = target - transform.position;
             Quaternion rotation = Quaternion.LookRotation(lookVector);
             transform.rotation = Quaternion.Lerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+            return rotation;
         }
 
         public static bool IsNearby(this Transform transform, in Vector3 target, float distance = 1)
