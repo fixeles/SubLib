@@ -25,4 +25,9 @@ public class ReusableCancellationTokenSource
         _cts?.Dispose();
         _cts = null;
     }
+
+    public void Cancell()
+    {
+        _cts?.Cancel();
+    }
 }
