@@ -1,17 +1,18 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class Timer
 {
     private const int StepMS = 50;
-    public static List<Timer> ActiveTimers { get; private set; }
+    private static List<Timer> ActiveTimers { get; set; }
+    private static bool _isStarted;
 
     private int _currentTime;
-    private bool _loop;
     private bool _destroyRequest;
-    private System.Action _action;
-    private static bool _isStarted;
+    private readonly System.Action _action;
+    private readonly bool _loop;
     private int frequencyMS;
 
     public int FrequencyMS
@@ -41,10 +42,12 @@ public class Timer
     private async void Init()
     {
         await Task.Delay(StepMS * 2);
-        if (ActiveTimers == null) ActiveTimers = new List<Timer>();
+        ActiveTimers ??= new List<Timer>();
         ActiveTimers.Add(this);
 
-        if (!_isStarted) StartTimers();
+        if (_isStarted) return;
+
+       StartTimers();
     }
 
     private static async void StartTimers()

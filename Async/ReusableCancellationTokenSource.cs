@@ -14,9 +14,8 @@ public class ReusableCancellationTokenSource
             _cts.Cancel();
             await Task.Yield();
         }
-
         _cts?.Dispose();
-        _cts = new CancellationTokenSource();
+        _cts = CancellationTokenSource.CreateLinkedTokenSource(AsyncCancellation.Token);
         return _cts.Token;
     }
 
@@ -26,7 +25,7 @@ public class ReusableCancellationTokenSource
         _cts = null;
     }
 
-    public void Cancell()
+    public void Cancel()
     {
         _cts?.Cancel();
     }

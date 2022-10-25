@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using ExtensionsMain;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Random = UnityEngine.Random;
 
 namespace Utils
 {
@@ -10,7 +14,8 @@ namespace Utils
         public static List<UnityEngine.Collider> Overlap(in BoxCollider collider)
         {
             var result = new List<UnityEngine.Collider>();
-            result.AddRange(Physics.OverlapBox(collider.bounds.center, collider.bounds.extents, collider.transform.rotation));
+            result.AddRange(Physics.OverlapBox(collider.bounds.center, collider.bounds.extents,
+                collider.transform.rotation));
             return result.TryRemoveItem(collider, out _);
         }
     }
@@ -43,6 +48,15 @@ namespace Utils
         }
     }
 
+    public static class Async
+    {
+        public static async Task<bool> Delay(int delayMS, CancellationToken token)
+        {
+            await Task.Delay(delayMS);
+            return !token.IsCancellationRequested;
+        }
+    }
+
     public static class EditorUtils
     {
         /// <summary>
@@ -54,16 +68,11 @@ namespace Utils
         {
 #if UNITY_EDITOR
             return UnityEditor.AssetDatabase.FindAssets($"t: {typeof(T).Name}").ToArray()
-                        .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
-                        .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<T>)
-                        .ToArray();
+                .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
+                .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<T>)
+                .ToArray();
 #endif
             return null;
         }
-
-
-
     }
 }
-
-
