@@ -19,9 +19,8 @@ public struct PlayerRunState : IState
         Vector3 velocity = new Vector3(Player.Instance.Rigidbody.velocity.x, 0, Player.Instance.Rigidbody.velocity.z);
         if (velocity.magnitude > 0)
         {
-            Player.Instance.transform.rotation = Quaternion.LookRotation(velocity.normalized);
-            // Quaternion.Lerp(Player.Instance.transform.rotation,
-            // Quaternion.LookRotation(velocity.normalized), Time.deltaTime * 20);
+            Player.Instance.transform.rotation = Quaternion.Lerp(Player.Instance.transform.rotation,
+                Quaternion.LookRotation(velocity.normalized), Time.deltaTime * 20);
         }
 
         if (!MainJoystick.Instance.IsActive()) Player.Instance.Statable.SetState(UnitState.Idle);
