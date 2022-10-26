@@ -1,82 +1,85 @@
-using UnityEngine;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 using ExtensionsAsync;
+using UnityEngine;
 
-public class InventoryItem : MonoBehaviour
+namespace Game.Scripts.UtilsSubmodule.Inventory
 {
-    [field: SerializeField] public ItemType Type { get; private set; }
-
-    private CancellationTokenSource _moveCTS;
-    private Magnet _magnet;
-    public Magnet Magnet => _magnet;
-
-    private void Awake()
+    public class InventoryItem : MonoBehaviour
     {
-        _magnet = GetComponent<Magnet>();
-    }
+        [field: SerializeField] public ItemType Type { get; private set; }
 
-    public async Task<bool> MoveTo(Inventory inventory)
-    {
-        if (_moveCTS != null)
+        private CancellationTokenSource _moveCTS;
+        private Magnet _magnet;
+        public Magnet Magnet => _magnet;
+
+        private void Awake()
         {
-            _moveCTS.Cancel();
-            await Task.Yield();
+            _magnet = GetComponent<Magnet>();
         }
 
-        _moveCTS = new CancellationTokenSource();
-
-        if (!inventory.Add(this)) return false;
-
-        await transform.CurveMoveAsync(transform.parent, inventory.Curves, _moveCTS.Token);
-        if (_moveCTS != null) _moveCTS.Dispose();
-        _moveCTS = null;
-
-        if (_magnet)
+        public async Task<bool> MoveTo(Inventory inventory)
         {
-            _magnet.Target = transform.parent;
-            if (!inventory.Dynamic) _magnet.Reset();
+            if (_moveCTS != null)
+            {
+                _moveCTS.Cancel();
+                await Task.Yield();
+            }
+
+            _moveCTS = new CancellationTokenSource();
+
+            if (!inventory.Add(this)) return false;
+
+            await transform.CurveMoveAsync(transform.parent, inventory.Curves, _moveCTS.Token);
+            if (_moveCTS != null) _moveCTS.Dispose();
+            _moveCTS = null;
+
+            if (_magnet)
+            {
+                _magnet.Target = transform.parent;
+                if (!inventory.Dynamic) _magnet.Reset();
+            }
+
+            return true;
         }
 
-        return true;
-    }
-
-    public async Task Hide(bool destroy = false)
-    {
-        await transform.RescaleAsync(transform.localScale, Vector3.zero, default, 0.2f);
-        if (_magnet != null) _magnet.Reset();
-        transform.localPosition = Vector3.zero;
-        if (destroy) Destroy(gameObject);
-    }
-
-    public async Task Show()
-    {
-        await transform.RescaleAsync(Vector3.zero, Vector3.one, default, 0.5f);
-    }
-
-    private void OnDestroy()
-    {
-        if (_moveCTS != null) _moveCTS.Cancel();
-    }
-
-    public void SwitchActive(bool value)
-    {
-        if (_moveCTS != null) _moveCTS.Cancel();
-
-        if (value)
+        public async Task Hide(bool destroy = false)
         {
-            _ = Show();
+            await transform.RescaleAsync(transform.localScale, Vector3.zero, default, 0.2f);
+            if (_magnet != null) _magnet.Reset();
+            transform.localPosition = Vector3.zero;
+            if (destroy) Destroy(gameObject);
         }
-        else
+
+        public async Task Show()
         {
-            _ = Hide(true);
+            await transform.RescaleAsync(Vector3.zero, Vector3.one, default, 0.5f);
         }
+
+        private void OnDestroy()
+        {
+            if (_moveCTS != null) _moveCTS.Cancel();
+        }
+
+        public void SwitchActive(bool value)
+        {
+            if (_moveCTS != null) _moveCTS.Cancel();
+
+            if (value)
+            {
+                _ = Show();
+            }
+            else
+            {
+                _ = Hide(true);
+            }
+        }
+
+        public bool IsActive() => gameObject.activeInHierarchy;
     }
 
-    public bool IsActive() => gameObject.activeInHierarchy;
-}
-
-public enum ItemType
-{
-    Item
+    public enum ItemType
+    {
+        Item
+    }
 }

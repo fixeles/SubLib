@@ -1,25 +1,28 @@
 using System.Threading.Tasks;
 
-public class TrashCan : InventoryReceiver
+namespace Game.Scripts.UtilsSubmodule.Inventory
 {
-    private int _clearDelayTime;
-
-    override protected void Start()
+    public class TrashCan : InventoryReceiver
     {
-        base.Start();
-        _clearDelayTime = (int)(Curves.Duration * 1000);
-        OnAddItem += ClearReceiver;
-    }
+        private int _clearDelayTime;
 
-    private void OnDestroy()
-    {
-        OnAddItem -= ClearReceiver;
-    }
+        override protected void Start()
+        {
+            base.Start();
+            _clearDelayTime = (int)(Curves.Duration * 1000);
+            OnAddItem += ClearReceiver;
+        }
 
-    private async void ClearReceiver()
-    {
-        await Task.Delay(_clearDelayTime, AsyncCancellation.Token);
-        Clear();
-    }
+        private void OnDestroy()
+        {
+            OnAddItem -= ClearReceiver;
+        }
 
+        private async void ClearReceiver()
+        {
+            await Task.Delay(_clearDelayTime, AsyncCancellation.Token);
+            Clear();
+        }
+
+    }
 }

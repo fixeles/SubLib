@@ -1,30 +1,31 @@
 using UnityEngine;
 
-
-public class HandsInventory : Inventory
+namespace Game.Scripts.UtilsSubmodule.Inventory
 {
-    [SerializeField] private Animator _animator;
-
-    protected override void Start()
+    public class HandsInventory : global::Game.Scripts.UtilsSubmodule.Inventory.Inventory
     {
-        base.Start();
-        OnAddItem += SwitchHands;
-        OnRemoveItem += SwitchHands;
-    }
+        [SerializeField] private Animator _animator;
 
-    private void OnDestroy()
-    {
-        OnAddItem -= SwitchHands;
-        OnRemoveItem -= SwitchHands;
-        StopAllCoroutines();
-    }
+        protected override void Start()
+        {
+            base.Start();
+            OnAddItem += SwitchHands;
+            OnRemoveItem += SwitchHands;
+        }
 
-    private void SwitchHands()
-    {
-        _animator.SetBool("HandsUp", GetItemsCount() > 0);
-    }
+        private void OnDestroy()
+        {
+            OnAddItem -= SwitchHands;
+            OnRemoveItem -= SwitchHands;
+            StopAllCoroutines();
+        }
 
-    /*
+        private void SwitchHands()
+        {
+            _animator.SetBool("HandsUp", GetItemsCount() > 0);
+        }
+
+        /*
         private async void UpHands()
         {
             if (GetItemsCount() == 1) return;
@@ -56,4 +57,5 @@ public class HandsInventory : Inventory
 
             if (_cts != null) _cts.Dispose();
         }*/
+    }
 }
