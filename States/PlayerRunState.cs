@@ -1,3 +1,4 @@
+using Game.Scripts.Units;
 using UnityEngine;
 
 public struct PlayerRunState : IState
@@ -11,7 +12,7 @@ public struct PlayerRunState : IState
     {
         const float defaultMoveSpeed = 5;
         Vector3 moveDirrection =
-            defaultMoveSpeed * Player.Instance.MoveSpeedMultiplier * Player.Instance.Input.Direction;
+            defaultMoveSpeed * Player.Instance.MoveSpeedMultiplier * MainJoystick.Instance.Direction;
         moveDirrection.y = Player.Instance.Rigidbody.velocity.y;
         Player.Instance.Rigidbody.velocity = moveDirrection;
 
@@ -23,7 +24,7 @@ public struct PlayerRunState : IState
             // Quaternion.LookRotation(velocity.normalized), Time.deltaTime * 20);
         }
 
-        if (!Player.Instance.Input.IsActive()) Player.Instance.Statable.SetState(UnitState.Idle);
+        if (!MainJoystick.Instance.IsActive()) Player.Instance.Statable.SetState(UnitState.Idle);
     }
 
     public void Exit()

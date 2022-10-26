@@ -1,3 +1,5 @@
+using Game.Scripts.Units;
+
 public struct PlayerIdleState : IState
 {
     public void Enter()
@@ -6,7 +8,7 @@ public struct PlayerIdleState : IState
 
     public void Update()
     {
-        if (Player.Instance.Input.IsActive()) Player.Instance.Statable.SetState(UnitState.Run);
+        if (MainJoystick.Instance.IsActive()) Player.Instance.Statable.SetState(UnitState.Run);
     }
 
     public void Exit()
