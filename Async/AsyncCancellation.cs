@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -9,7 +10,6 @@ public class AsyncCancellation : MonoBehaviour
 
     private void Awake()
     {
-        _cts?.Cancel();
         _cts = new();
     }
 
@@ -21,6 +21,13 @@ public class AsyncCancellation : MonoBehaviour
         }
 
         return false;
+    }
+
+    private async void OnDisable()
+    {
+        _cts?.Cancel();
+        await Task.Yield();
+        _cts?.Dispose();
     }
 
     private async void OnDestroy()
