@@ -29,10 +29,4 @@ public class AsyncCancellation : MonoBehaviour
         await Task.Yield();
         _cts?.Dispose();
     }
-
-    private async void OnDestroy()
-    {
-        await Task.Yield();
-        if (!Application.isPlaying) _cts.Cancel();
-    }
 }
