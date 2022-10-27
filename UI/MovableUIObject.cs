@@ -1,22 +1,27 @@
 using UnityEngine;
 
-
 public class MovableUIObject : MonoBehaviour
 {
     public Transform Target;
+    private Transform _cachedTransform;
 
-    private void Start()
+    private void Awake()
     {
-        transform.SetParent(LevelData.Instance.MainCanvas.transform);
+        _cachedTransform = transform;
+        _cachedTransform.SetParent(LevelData.Instance.MainCanvas.transform);
+        _cachedTransform.localPosition = new Vector3(-3000, -3000, 0f);
     }
 
     private void OnEnable()
     {
-        transform.localPosition = new Vector3(-2000, -2000, 0f);
+        _cachedTransform.position = StaticData.Instance.Camera.WorldToScreenPoint(Target.position);
     }
 
     private void LateUpdate()
     {
-        transform.position = StaticData.Instance.Camera.WorldToScreenPoint(Target.position);
+        const int dampingSpeed = 20;
+        _cachedTransform.position =
+            Vector3.Lerp(_cachedTransform.position,
+                StaticData.Instance.Camera.WorldToScreenPoint(Target.position), Time.deltaTime * dampingSpeed);
     }
 }
