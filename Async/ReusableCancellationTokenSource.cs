@@ -9,23 +9,17 @@ public class ReusableCancellationTokenSource
 
     public async Task<CancellationToken> Create()
     {
-        if (_cts != null)
-        {
-            _cts.Cancel();
-            await Task.Yield();
-        }
+        await Dispose();
 
-        _cts?.Dispose();
         _cts = CancellationTokenSource.CreateLinkedTokenSource(AsyncCancellation.Token);
         return _cts.Token;
     }
 
-    public async void Dispose()
+    public async Task Dispose()
     {
-        if (_cts == null) return;
-        _cts.Cancel();
+        _cts?.Cancel();
         await Task.Yield();
-        _cts.Dispose();
+        _cts?.Dispose();
         _cts = null;
     }
 
