@@ -49,17 +49,13 @@ namespace ExtensionsAsync
 
         public static async Task FadeAsync(this Image image, CancellationToken token, float duration = 0.1f)
         {
-            duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
-            var levelToken = AsyncCancellation.Token;
             Color color = Color.white;
             while (color.a > 0)
             {
-                if (levelToken.IsCancellationRequested) return;
-                if (token.IsCancellationRequested) return;
                 color.a -= Time.deltaTime / duration;
                 image.color = color;
                 await Task.Yield();
-                // if (AsyncCancellation.IsCancelled(sessionID)) return;
+                if (token.IsCancellationRequested) return;
             }
         }
 

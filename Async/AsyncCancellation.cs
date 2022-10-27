@@ -26,8 +26,8 @@ public class AsyncCancellation : MonoBehaviour
     private async void OnDisable()
     {
         var cts = _cts;
-        _cts.Cancel();
+        cts.Cancel();
         await Task.Delay(30000);
-        _cts?.Dispose();
+        cts.Dispose();
     }
 }
