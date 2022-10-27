@@ -36,6 +36,17 @@ namespace ExtensionsAsync
             }
         }
 
+        public static async Task FillAsync(this Image image, CancellationToken token, float speed = 1)
+        {
+            while (true)
+            {
+                image.fillAmount += Time.deltaTime * speed;
+                if (image.fillAmount is 0 or 1) return;
+                await Task.Yield();
+                if (token.IsCancellationRequested) return;
+            }
+        }
+
         public static async Task FadeAsync(this Image image, CancellationToken token, float duration = 0.1f)
         {
             duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
