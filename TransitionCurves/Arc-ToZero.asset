@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72852224573e1cd46be850a8237e44c4, type: 3}
   m_Name: Arc-ToZero
   m_EditorClassIdentifier: 
-  <TransitionDuration>k__BackingField: 0.5
+  <Duration>k__BackingField: 0.5
   <MoveCurve>k__BackingField:
     serializedVersion: 2
     m_Curve:
@@ -59,7 +59,7 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 1
     - serializedVersion: 3
-      time: 0.8
+      time: 0.29999998
       value: 1
       inSlope: -0.0025466555
       outSlope: -0.0025466555
@@ -70,11 +70,11 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: -14.259407
-      outSlope: -14.259407
+      inSlope: -4.0442953
+      outSlope: -4.0442953
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.34632567
+      inWeight: 0.04416278
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
