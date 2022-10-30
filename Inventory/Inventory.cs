@@ -9,8 +9,8 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
     {
         public event System.Action OnAddItem;
         public event System.Action OnRemoveItem;
-    
-        [field: SerializeField] public TransitionCurves Curves { get; set; }
+
+        [field: SerializeField] public TransitionCurves Curves { get; private set; }
         [field: SerializeField] public bool LimitTypeSpase { get; private set; }
         [field: SerializeField] public int DefaultSize { get; private set; }
         [field: SerializeField] public bool Dynamic { get; private set; }
@@ -24,12 +24,11 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
 
         public List<InventoryItem> Items => _items;
 
-        [ExecuteInEditMode]
-        private void OnEnable()
+        private void OnValidate()
         {
             if (Curves == null) Curves = FindObjectOfType<TransitionCurves>();
         }
-
+        
         public void Clear()
         {
             for (int i = 0; i < _items.Count; i++)
@@ -41,6 +40,7 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
                 item.transform.parent = null;
                 _items[i] = null;
             }
+
             OnRemoveItem?.Invoke();
         }
 
@@ -80,6 +80,7 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
             {
                 if (_items[i] != null) return false;
             }
+
             Debug.Log(this + " is empty");
             return true;
         }
@@ -150,6 +151,7 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
             {
                 if (item?.Type == type) count++;
             }
+
             return count;
         }
 
@@ -160,6 +162,7 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
             {
                 if (item != null) count++;
             }
+
             return count;
         }
 
@@ -194,6 +197,7 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
                 TrySort();
                 return true;
             }
+
             return false;
         }
 
@@ -207,6 +211,7 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
                     return _items[i];
                 }
             }
+
             index = -1;
             return null;
         }
@@ -230,6 +235,7 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
                 _items.Add(null);
                 NewSlot();
             }
+
             GetComponent<LayoutGroup3D>()?.RebuildLayout();
         }
 
@@ -270,6 +276,7 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
             {
                 array[i] = type;
             }
+
             return array;
         }
 
@@ -284,6 +291,7 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
                     break;
                 }
             }
+
             if (emptySlot == Items.Count - 1) return;
 
             bool hasTask = false;
@@ -308,41 +316,5 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
 
             Items[from] = null;
         }
-
-        /*
-    #if UNITY_EDITOR
-        [CustomEditor(typeof(Inventory))]
-        public class CurveTransitionEditor : Editor
-        {
-            private void OnEnable()
-            {
-                var tgt = (Inventory)target;
-                tgt._curveTransition = new AnimBool(false);
-                tgt._curveTransition.valueChanged.AddListener(Repaint);
-            }
-
-            public override void OnInspectorGUI()
-            {
-                base.OnInspectorGUI();
-                var tgt = (Inventory)target;
-                tgt._curveTransition.target = EditorGUILayout.ToggleLeft("Curve Transition", tgt._curveTransition.target);
-                if (tgt._curveTransition.value)
-                {
-                    EditorGUI.indentLevel++;
-
-                    EditorGUILayout.ObjectField(tgt.Curves, typeof(TransitionCurves), true);
-
-                    // EditorGUILayout.CurveField("Move curve", tgt._moveCurve);
-                    // EditorGUILayout.CurveField("Scale curve", tgt._scaleCurve);
-                    // EditorGUILayout.CurveField("Height curve", tgt._heightCurve);
-
-                    EditorGUI.indentLevel--;
-                }
-            }
-        }
-    #endif*/
     }
 }
-
-
-
