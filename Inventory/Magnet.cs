@@ -23,6 +23,9 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
 
                 var lerpValue = _target.transform.localPosition.y / Settings.Height;
                 _force = Settings.ForceCurve.Evaluate(lerpValue) * Settings.ForceMultiplier;
+                
+                _lastRotation = transform.rotation;
+                _lastPosition = transform.position;
             }
         }
 
@@ -32,7 +35,7 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
             _force = 0;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (Target == null || _force == 0)
             {
@@ -40,14 +43,8 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
                 return;
             }
 
-            transform.rotation = _lastRotation;
-            transform.position = _lastPosition;
-            transform.position = Vector3.Lerp(transform.position, _target.position, Time.deltaTime * _force);
-            transform.rotation = Quaternion.Lerp(transform.rotation, _target.rotation, Time.deltaTime * _force * 2);
-        }
-
-        private void LateUpdate()
-        {
+            transform.position = Vector3.Lerp(_lastPosition, _target.position, Time.fixedDeltaTime * _force);
+            transform.rotation = Quaternion.Lerp(_lastRotation, _target.rotation, Time.fixedDeltaTime * _force * 2);
             _lastRotation = transform.rotation;
             _lastPosition = transform.position;
         }

@@ -311,8 +311,8 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
             Items[to] = Items[from];
             Items[to].transform.parent = _positions[to];
 
-            if (Items[to].Magnet != null) Items[to].Magnet.Target = Items[to].transform.parent;
-            else Items[to].transform.localPosition = Vector3.zero;
+         //   if (Items[to].Magnet != null) Items[to].Magnet.Target = Items[to].transform.parent;
+         //   else Items[to].transform.localPosition = Vector3.zero;
 
             Items[from] = null;
         }
