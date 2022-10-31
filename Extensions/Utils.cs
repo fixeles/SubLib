@@ -46,6 +46,12 @@ namespace Utils
             int roll = Random.Range(0, 101);
             return roll <= chance;
         }
+
+        public static bool IsActive(Behaviour behaviour)
+        {
+            if (behaviour == null) return false;
+            return behaviour.isActiveAndEnabled;
+        }
     }
 
     public static class Async
