@@ -5,6 +5,8 @@ public class MovableUIObject : MonoBehaviour
     public Transform Target;
     private Transform _cachedTransform;
 
+    [SerializeField, Min(0)] private int dampingSpeed = 20;
+
     private void Awake()
     {
         _cachedTransform = transform;
@@ -19,9 +21,9 @@ public class MovableUIObject : MonoBehaviour
 
     private void LateUpdate()
     {
-        const int dampingSpeed = 20;
-        _cachedTransform.position =
-            Vector3.Lerp(_cachedTransform.position,
+        _cachedTransform.position = dampingSpeed == 0
+            ? Target.position
+            : Vector3.Lerp(_cachedTransform.position,
                 StaticData.Instance.Camera.WorldToScreenPoint(Target.position), Time.deltaTime * dampingSpeed);
     }
 }
