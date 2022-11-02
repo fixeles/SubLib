@@ -28,7 +28,7 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
         {
             if (Curves == null) Curves = FindObjectOfType<TransitionCurves>();
         }
-        
+
         public void Clear()
         {
             for (int i = 0; i < _items.Count; i++)
@@ -70,8 +70,21 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
             InventoryItem removedItem;
             if (!RemoveItem(itemType, out removedItem)) return false;
 
-            var result = await removedItem.MoveTo(targetInventory);
-            return result;
+            return await removedItem.MoveTo(targetInventory);
+        }
+
+        public async Task<bool> TransferItemUseBuffer(ItemType itemType, Transform buffer, Inventory targetInventory)
+        {
+            if (!targetInventory.AwailableTypes.Contains(itemType)) return false;
+
+            if (targetInventory.LimitTypeSpase && !targetInventory.HasTypeSpace(itemType)) return false;
+            else if (!targetInventory.HasEmptySlot(out _)) return false;
+
+            InventoryItem removedItem;
+            if (!RemoveItem(itemType, out removedItem)) return false;
+            removedItem.transform.position = buffer.position;
+
+            return await removedItem.MoveTo(targetInventory);
         }
 
         public bool IsEmpty()
@@ -311,8 +324,8 @@ namespace Game.Scripts.UtilsSubmodule.Inventory
             Items[to] = Items[from];
             Items[to].transform.parent = _positions[to];
 
-         //   if (Items[to].Magnet != null) Items[to].Magnet.Target = Items[to].transform.parent;
-         //   else Items[to].transform.localPosition = Vector3.zero;
+            //if (Items[to].Magnet != null) Items[to].Magnet.Target = Items[to].transform.parent;
+            //else Items[to].transform.localPosition = Vector3.zero;
 
             Items[from] = null;
         }
