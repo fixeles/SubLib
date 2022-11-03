@@ -2,15 +2,20 @@ using UnityEngine;
 
 public class MovableUIObject : MonoBehaviour
 {
+    [SerializeField] private Transform _customParentOnEnable;
     public Transform Target;
     private Transform _cachedTransform;
+
 
     [SerializeField, Min(0)] private int dampingSpeed = 20;
 
     private void Awake()
     {
         _cachedTransform = transform;
-        _cachedTransform.SetParent(LevelData.Instance.MainCanvas.transform);
+        _cachedTransform.SetParent(_customParentOnEnable
+            ? _customParentOnEnable
+            : LevelData.Instance.MainCanvas.transform);
+
         _cachedTransform.localPosition = new Vector3(-3000, -3000, 0f);
     }
 
