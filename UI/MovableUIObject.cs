@@ -1,3 +1,4 @@
+using Game.Scripts.Data;
 using UnityEngine;
 
 public class MovableUIObject : MonoBehaviour
@@ -7,7 +8,7 @@ public class MovableUIObject : MonoBehaviour
     private Transform _cachedTransform;
 
 
-    [SerializeField, Min(0)] private int dampingSpeed = 20;
+    [SerializeField, Min(0)] private int dampingSpeed = 0;
 
     private void Awake()
     {
