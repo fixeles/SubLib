@@ -9,6 +9,13 @@ namespace UtilsSubmodule.States
         private NavMeshAgent _agent;
         private Animator _animator;
         private Statable _statable;
+        
+        public AgentRunState(NavMeshAgent agent, Animator animator, Statable statable)
+        {
+            _agent = agent;
+            _animator = animator;
+            _statable = statable;
+        }
 
         public void Enter()
         {
