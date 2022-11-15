@@ -32,11 +32,3 @@ public enum UnitState
     Run,
     Death
 }
-
-public enum AnimationType
-{
-    Idle,
-    Run,
-    Death,
-    Attack
-}

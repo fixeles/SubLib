@@ -9,7 +9,8 @@ namespace UtilsSubmodule.States
         private NavMeshAgent _agent;
         private Animator _animator;
         private Statable _statable;
-        
+        private static readonly int RunHash = Animator.StringToHash("Run");
+
         public AgentRunState(NavMeshAgent agent, Animator animator, Statable statable)
         {
             _agent = agent;
@@ -19,7 +20,7 @@ namespace UtilsSubmodule.States
 
         public void Enter()
         {
-            _animator.SetBool(AnimationType.Run.ToString(), true);
+            _animator.SetBool(RunHash, true);
             _agent.isStopped = false;
         }
 

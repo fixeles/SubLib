@@ -1,27 +1,30 @@
-using UnityEngine;
 using System;
+using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
-public class CollisionEvent : MonoBehaviour
+namespace UtilsSubmodule
 {
-    public event Action<Collision> OnCollisionEnterEvent;
-    public event Action<Collision> OnCollisionStayEvent;
-    public event Action<Collision> OnCollisionExitEvent;
-
-
-    private void OnCollisionEnter(Collision other)
+    [RequireComponent(typeof(Collider))]
+    public class CollisionEvent : MonoBehaviour
     {
-        OnCollisionEnterEvent?.Invoke(other);
-    }
+        public event Action<Collision> OnCollisionEnterEvent;
+        public event Action<Collision> OnCollisionStayEvent;
+        public event Action<Collision> OnCollisionExitEvent;
 
-    private void OnCollisionStay(Collision other)
-    {
-        OnCollisionStayEvent?.Invoke(other);
-    }
 
-    private void OnCollisionExit(Collision other)
-    {
-        OnCollisionExitEvent?.Invoke(other);
-    }
+        private void OnCollisionEnter(Collision other)
+        {
+            OnCollisionEnterEvent?.Invoke(other);
+        }
 
+        private void OnCollisionStay(Collision other)
+        {
+            OnCollisionStayEvent?.Invoke(other);
+        }
+
+        private void OnCollisionExit(Collision other)
+        {
+            OnCollisionExitEvent?.Invoke(other);
+        }
+
+    }
 }

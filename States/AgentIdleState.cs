@@ -6,9 +6,10 @@ namespace UtilsSubmodule.States
 {
     public struct AgentIdleState : IState
     {
-        private NavMeshAgent _agent;
-        private Animator _animator;
-        private Statable _statable;
+        private readonly NavMeshAgent _agent;
+        private readonly Animator _animator;
+        private readonly Statable _statable;
+        private static readonly int RunHash = Animator.StringToHash("Run");
 
         public AgentIdleState(NavMeshAgent agent, Animator animator, Statable statable)
         {
@@ -19,7 +20,7 @@ namespace UtilsSubmodule.States
 
         public void Enter()
         {
-            _animator.SetBool(AnimationType.Run.ToString(), false);
+            _animator.SetBool(RunHash, false);
             _agent.isStopped = true;
         }
 
