@@ -26,7 +26,13 @@ namespace ExtensionsMain
             {
                 if (array[i].Equals(item)) count++;
             }
+
             return count;
+        }
+
+        public static void TryGetComponent<T>(this GameObject go, ref T component) where T : MonoBehaviour
+        {
+            if (component == null) component = go.GetComponent<T>();
         }
 
         public static Quaternion RandomRotation(this Quaternion rotation)
@@ -54,6 +60,7 @@ namespace ExtensionsMain
             {
                 if (array[i].gameObject.activeSelf) childs.Add(array[i]);
             }
+
             return childs;
         }
 
@@ -112,6 +119,7 @@ namespace ExtensionsMain
             {
                 array[i] = type;
             }
+
             return array;
         }
 
@@ -129,6 +137,7 @@ namespace ExtensionsMain
                 nearestDistance = distance;
                 nearestObject = item;
             }
+
             return nearestObject;
         }
 
@@ -144,6 +153,7 @@ namespace ExtensionsMain
                     break;
                 }
             }
+
             if (index < 0) return list;
 
             isChanged = true;
@@ -151,8 +161,5 @@ namespace ExtensionsMain
             Debug.Log(item + " removed from " + list);
             return list;
         }
-
     }
 }
-
-

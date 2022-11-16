@@ -1,32 +1,29 @@
 using ExtensionsMbehs;
+using Game.Scripts.Mbehs;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace UtilsSubmodule.States
 {
-    public struct AgentRunState : IState
+    public class AgentRunState : IState
     {
-        private NavMeshAgent _agent;
-        private Animator _animator;
-        private Statable _statable;
+        private readonly Unit _unit;
         private static readonly int RunHash = Animator.StringToHash("Run");
 
-        public AgentRunState(NavMeshAgent agent, Animator animator, Statable statable)
+        public AgentRunState(Unit unit)
         {
-            _agent = agent;
-            _animator = animator;
-            _statable = statable;
+            _unit = unit;
         }
 
         public void Enter()
         {
-            _animator.SetBool(RunHash, true);
-            _agent.isStopped = false;
+            _unit.Animator.SetBool(RunHash, true);
+            _unit.Agent.isStopped = false;
         }
 
         public void Update()
         {
-            if (_agent.IsReached()) _statable.SetState(UnitState.Idle);
+            if (_unit.Agent.IsReached()) _unit.Statable.SetState(UnitState.Idle);
         }
 
         public void Exit()
