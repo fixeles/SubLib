@@ -5,15 +5,14 @@ namespace UtilsSubmodule
     public class Scanner<T> where T : MonoBehaviour
     {
         public event System.Action OnTargetFound;
+        public T CurrentTarget;
         private readonly ScannerTrigger _trigger;
         private readonly string _tag;
-        public T CurrentTarget { get; private set; }
 
         public Scanner(ScannerTrigger trigger, string tag = "")
         {
             _tag = tag;
             _trigger = trigger;
-            CurrentTarget = null;
             Run();
         }
 
@@ -35,7 +34,7 @@ namespace UtilsSubmodule
             if (_tag.Length > 0 && !collider.CompareTag(_tag)) return;
 
             var newTarget = collider.GetComponent<T>();
-            if (newTarget == null) return;
+            if (newTarget == null || !newTarget.enabled) return;
 
             _trigger.Reset();
             OnTargetFound?.Invoke();
