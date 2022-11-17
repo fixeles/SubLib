@@ -30,9 +30,12 @@ namespace ExtensionsMain
             return count;
         }
 
-        public static void TryGetComponent<T>(this GameObject go, ref T component) where T : MonoBehaviour
+        public static bool TryGetComponent<T>(this GameObject go, ref T component) where T : Component
         {
-            if (component == null) component = go.GetComponent<T>();
+            if (component != null) return false;
+            
+            component = go.GetComponent<T>();
+            return true;
         }
 
         public static Quaternion RandomRotation(this Quaternion rotation)
