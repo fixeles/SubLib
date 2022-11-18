@@ -30,7 +30,7 @@ namespace ExtensionsMain
             return count;
         }
 
-        public static bool TryGetComponent<T>(this GameObject go, ref T component) where T : Component
+        public static bool TrySetComponent<T>(this GameObject go, ref T component) where T : Component
         {
             if (component != null) return false;
             

@@ -1,5 +1,5 @@
 using ExtensionsMbehs;
-using Game.Scripts.Mbehs;
+using Game.Scripts.MonoBehaviours;
 using UnityEngine;
 using UnityEngine.AI;
 
