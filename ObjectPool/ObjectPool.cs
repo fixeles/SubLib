@@ -1,65 +1,69 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class ObjectPool<T> where T : MonoBehaviour, IPoolObject
+namespace UtilsSubmodule.ObjectPool
 {
-    protected List<T> Pool;
-    private Transform _parent;
-    private int _currentIndex;
-    private T _prefab;
-
-    public ObjectPool(Transform parent, T prefab)
+    [System.Serializable]
+    public struct ObjectPool<T> where T : MonoBehaviour, IPoolObject
     {
-        _parent = parent;
-        _prefab = prefab;
-        Pool = new List<T>();
+        [field: SerializeField, ReadOnly] public List<T> Pool { get; private set; }
+        [SerializeField] private Transform _parent;
+        [SerializeField] private T _prefab;
+        private int _currentIndex;
 
-        Pool.AddRange(parent.GetComponentsInChildren<T>());
-        foreach (var poolObject in Pool)
+        public void Init()
         {
-            poolObject.SwitchActive(false);
-        }
-    }
-
-    public T Get(Vector3 position, Quaternion rotation)
-    {
-        int counter = Pool.Count;
-        while (counter > 0)
-        {
-            _currentIndex++;
-            if (_currentIndex >= Pool.Count) _currentIndex = 0;
-            if (Pool[_currentIndex] == null)
+            Pool.Clear();
+            Pool.AddRange(_parent.GetComponentsInChildren<T>());
+            foreach (var poolObject in Pool)
             {
-                Pool.RemoveAt(_currentIndex);
-                _currentIndex--;
-#if UNITY_EDITOR
-                Debug.Log("Destroyed object in pool");
-#endif
-                continue;
+                poolObject.SwitchActive(false);
             }
-
-            if (!Pool[_currentIndex].IsActive())
-            {
-                T poolObject = Pool[_currentIndex];
-
-                poolObject.transform.position = position;
-                poolObject.transform.rotation = rotation;
-                poolObject.SwitchActive(true);
-                return poolObject;
-            }
-            counter--;
         }
 
-        var newObject = GameObject.Instantiate(_prefab, position, rotation, _parent);
-        Pool.Add(newObject);
+        public T Get(Vector3 position, Quaternion rotation)
+        {
+            var counter = Pool.Count;
+            while (counter > 0)
+            {
+                _currentIndex++;
+                if (_currentIndex >= Pool.Count) _currentIndex = 0;
+                // if (Pool[_currentIndex] == null)
+                if (!Pool[_currentIndex])
+                {
+                    Pool.RemoveAt(_currentIndex);
+                    _currentIndex--;
+#if UNITY_EDITOR
+                    Debug.Log("Destroyed object in pool");
+#endif
+                    continue;
+                }
+
+                if (!Pool[_currentIndex].IsActive())
+                {
+                    var poolObject = Pool[_currentIndex];
+
+                    var transform = poolObject.transform;
+                    transform.position = position;
+                    transform.rotation = rotation;
+                    poolObject.SwitchActive(true);
+                    return poolObject;
+                }
+
+                counter--;
+            }
+
+            var newObject = Object.Instantiate(_prefab, position, rotation, _parent);
+            Pool.Add(newObject);
 
 #if UNITY_EDITOR
-        Debug.Log($"New pool object was created. {Pool.Count} objects in Pool");
+            Debug.Log($"New pool object was created. {Pool.Count} objects in Pool");
 #endif
-        return newObject;
-    }
+            return newObject;
+        }
 
-    public T Get() => Get(Vector3.zero, Quaternion.identity);
-    public T Get(Vector3 position) => Get(position, Quaternion.identity);
-    public T Get(Quaternion rotation) => Get(Vector3.zero, rotation);
+        public T Get() => Get(Vector3.zero, Quaternion.identity);
+        public T Get(Vector3 position) => Get(position, Quaternion.identity);
+        public T Get(Quaternion rotation) => Get(Vector3.zero, rotation);
+    }
 }
