@@ -190,11 +190,11 @@ namespace ExtensionsAsync
             var levelToken = AsyncCancellation.Token;
             float transition = 0;
             Vector3 startPos = transform.position;
-
             while (transition < 1)
             {
                 if (AsyncCancellation.IsCancelled(token, levelToken)) return;
-                float timeLeft = transform.DistanceTo(target) / speed;
+                float timeLeft = target.DistanceTo(startPos) / speed;
+                
                 transition += Time.deltaTime / timeLeft;
                 transform.position = Vector3.Lerp(startPos, target.position, transition);
 
