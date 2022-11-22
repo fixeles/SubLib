@@ -9,7 +9,7 @@ namespace UtilsSubmodule
         public event Action<Collider> OnTriggerEnterEvent;
         [SerializeField, ReadOnly] private SphereCollider _selfCollider;
 
-        [SerializeField, Min(1)] private float _scanSpeed;
+        [SerializeField, Min(1)] private float _scansPerSecond = 1;
         public float MaxRadius { get; private set; }
 
         public void Reset() => _selfCollider.radius = 0;
@@ -28,10 +28,10 @@ namespace UtilsSubmodule
         }
 
         private void OnTriggerEnter(Collider other) => OnTriggerEnterEvent?.Invoke(other);
-        
+
         private void Update()
         {
-            _selfCollider.radius += Time.deltaTime * _scanSpeed;
+            _selfCollider.radius += Time.deltaTime * MaxRadius * _scansPerSecond;
             if (_selfCollider.radius > MaxRadius) Reset();
         }
     }

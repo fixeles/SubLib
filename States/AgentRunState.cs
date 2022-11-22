@@ -1,7 +1,6 @@
 using ExtensionsMbehs;
 using Game.Scripts.MonoBehaviours;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace UtilsSubmodule.States
 {
