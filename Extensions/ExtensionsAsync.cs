@@ -21,16 +21,22 @@ namespace ExtensionsAsync
 
             float transition = 0;
             duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
+
             int propertyID =
                 renderer.material.shader.GetPropertyNameId(
                     renderer.material.shader.FindPropertyIndex("_EmissionColor"));
             Color startColor = renderer.material.GetColor(propertyID);
 
+            var meterials = renderer.materials;
             while (transition < 1)
             {
                 if (AsyncCancellation.IsCancelled(token, levelToken)) return;
                 transition += Time.deltaTime / duration;
-                renderer.material.SetColor(propertyID, Color.Lerp(startColor, target, transition));
+                for (int i = 0; i < meterials.Length; i++)
+                {
+                    meterials[i].SetColor(propertyID, Color.Lerp(startColor, target, transition));
+                }
+
 
                 await Task.Yield();
             }
