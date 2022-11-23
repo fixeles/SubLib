@@ -126,7 +126,7 @@ namespace ExtensionsMain
             return array;
         }
 
-        public static T GetNearestObject<T>(this Transform transform, List<T> objects) where T : MonoBehaviour
+        public static T GetNearestObject<T>(this Transform transform, IEnumerable<T> objects) where T : Component
         {
             T nearestObject = default;
             var nearestDistance = float.MaxValue;
