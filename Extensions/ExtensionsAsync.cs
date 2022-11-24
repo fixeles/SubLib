@@ -1,16 +1,23 @@
-using System.Threading.Tasks;
 using System.Threading;
-using UnityEngine;
+using System.Threading.Tasks;
 using ExtensionsMain;
+using UnityEngine;
 using UnityEngine.UI;
 
-namespace ExtensionsAsync
+namespace UtilsSubmodule.Extensions
 {
     public static class ExtensionsAsync
     {
         public static async Task BlinkAsync(this Renderer renderer, CancellationToken token, float duration = 0.1f)
         {
             await renderer.RecolorAsync(Color.white, token, duration / 2);
+            await renderer.RecolorAsync(Color.black, token, duration / 2);
+        }
+
+        public static async Task BlinkAsync(this Renderer renderer, Color color, CancellationToken token,
+            float duration = 0.1f)
+        {
+            await renderer.RecolorAsync(color, token, duration / 2);
             await renderer.RecolorAsync(Color.black, token, duration / 2);
         }
 
@@ -194,7 +201,7 @@ namespace ExtensionsAsync
             {
                 if (AsyncCancellation.IsCancelled(token, levelToken)) return;
                 float timeLeft = target.DistanceTo(startPos) / speed;
-                
+
                 transition += Time.deltaTime / timeLeft;
                 transform.position = Vector3.Lerp(startPos, target.position, transition);
 
