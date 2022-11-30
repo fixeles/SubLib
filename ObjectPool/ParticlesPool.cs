@@ -1,22 +1,25 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-[System.Serializable]
-public class ParticlesPool
+namespace UtilsSubmodule.ObjectPool
 {
-    [SerializeField] private List<ParticleSystem> _pool;
-    private int _currentIndex;
-
-    public void PlayAt(Vector3 position)
+    [System.Serializable]
+    public struct ParticlesPool
     {
-        _pool[_currentIndex].transform.position = position;
-        Play();
-    }
+        [SerializeField] private List<ParticleSystem> _pool;
+        private int _currentIndex;
 
-    public void Play()
-    {
-        _pool[_currentIndex].Play();
-        _currentIndex++;
-        if (_currentIndex >= _pool.Count) _currentIndex = 0;
+        public void PlayAt(Vector3 position)
+        {
+            _pool[_currentIndex].transform.position = position;
+            Play();
+        }
+
+        public void Play()
+        {
+            _pool[_currentIndex].Play();
+            _currentIndex++;
+            if (_currentIndex >= _pool.Count) _currentIndex = 0;
+        }
     }
 }
