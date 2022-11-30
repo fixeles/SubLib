@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -13,7 +12,7 @@ public class AsyncCancellation : MonoBehaviour
         _cts = new();
     }
 
-    public static bool IsCancelled(params CancellationToken[] tokens)
+    /*public static bool IsCancelled(params CancellationToken[] tokens)
     {
         for (int i = 0; i < tokens.Length; i++)
         {
@@ -21,7 +20,7 @@ public class AsyncCancellation : MonoBehaviour
         }
 
         return false;
-    }
+    }*/
 
     private async void OnDisable()
     {

@@ -24,8 +24,6 @@ namespace UtilsSubmodule.Extensions
         public static async Task RecolorAsync(this Renderer renderer, Color target, CancellationToken token,
             float duration = 0.1f)
         {
-            var levelToken = AsyncCancellation.Token;
-
             float transition = 0;
             duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
 
@@ -34,14 +32,14 @@ namespace UtilsSubmodule.Extensions
                     renderer.material.shader.FindPropertyIndex("_EmissionColor"));
             Color startColor = renderer.material.GetColor(propertyID);
 
-            var meterials = renderer.materials;
+            var materials = renderer.materials;
             while (transition < 1)
             {
-                if (AsyncCancellation.IsCancelled(token, levelToken)) return;
+                if (token.IsCancellationRequested) return;
                 transition += Time.deltaTime / duration;
-                for (int i = 0; i < meterials.Length; i++)
+                for (int i = 0; i < materials.Length; i++)
                 {
-                    meterials[i].SetColor(propertyID, Color.Lerp(startColor, target, transition));
+                    materials[i].SetColor(propertyID, Color.Lerp(startColor, target, transition));
                 }
 
 
@@ -62,7 +60,7 @@ namespace UtilsSubmodule.Extensions
 
         public static async Task FadeAsync(this Image image, CancellationToken token, float duration = 0.1f)
         {
-            Color color = Color.white;
+            var color = Color.white;
             while (color.a > 0)
             {
                 color.a -= Time.deltaTime / duration;
@@ -75,14 +73,13 @@ namespace UtilsSubmodule.Extensions
         public static async Task MoveAsync(this Transform transform, Vector3 target, CancellationToken token,
             float duration = 0.1f)
         {
-            var levelToken = AsyncCancellation.Token;
             float transition = 0;
             duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
-            Vector3 startPos = transform.position;
+            var startPos = transform.position;
 
             while (transition < 1)
             {
-                if (AsyncCancellation.IsCancelled(token, levelToken)) return;
+                if (token.IsCancellationRequested) return;
                 transition += Time.deltaTime / duration;
                 transform.position = Vector3.Lerp(startPos, target, transition);
 
@@ -93,15 +90,14 @@ namespace UtilsSubmodule.Extensions
         public static async Task LerpAsync(this Transform transform, Transform target, CancellationToken token,
             float duration = 0.1f, bool rotate = true)
         {
-            var levelToken = AsyncCancellation.Token;
             float transition = 0;
             duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
 
-            Vector3 startPos = transform.position;
-            Quaternion startRot = transform.rotation;
+            var startPos = transform.position;
+            var startRot = transform.rotation;
             while (transition < 1)
             {
-                if (AsyncCancellation.IsCancelled(token, levelToken)) return;
+                if (token.IsCancellationRequested) return;
                 transition += Time.deltaTime / duration;
                 transform.position = Vector3.Lerp(startPos, target.position, transition);
                 if (rotate) transform.rotation = Quaternion.Lerp(startRot, target.rotation, transition);
@@ -126,7 +122,7 @@ namespace UtilsSubmodule.Extensions
         }
 
         public static async Task HorizontalSoftLookAtAsync(this Transform transform, Transform target, float duration,
-            float rotationSpeed = 5, params CancellationToken[] tokens)
+            CancellationToken token, float rotationSpeed = 5)
         {
             float timeElapsed = 0;
             while (timeElapsed < duration)
@@ -135,22 +131,21 @@ namespace UtilsSubmodule.Extensions
 
                 transform.HorizontalSoftLookAt(target.position, rotationSpeed);
                 await Task.Yield();
-                if (AsyncCancellation.IsCancelled(tokens)) return;
+                if (token.IsCancellationRequested) return;
             }
         }
 
         public static async Task CurveMoveAsync(this Transform transform, Transform target,
             TransitionCurves curves, CancellationToken token = default, bool rotate = true)
         {
-            var levelToken = AsyncCancellation.Token;
             float transition = 0;
 
-            Vector3 startPos = transform.position;
-            Quaternion startRot = transform.rotation;
+            var startPos = transform.position;
+            var startRot = transform.rotation;
 
             while (transition < 1)
             {
-                if (AsyncCancellation.IsCancelled(token, levelToken)) return;
+                if (token.IsCancellationRequested) return;
                 transition += Time.deltaTime / curves.Duration;
 
                 var nextPosition = Vector3.Lerp(startPos, target.position, curves.MoveCurve.Evaluate(transition));
@@ -169,21 +164,20 @@ namespace UtilsSubmodule.Extensions
             Quaternion targetRotation,
             TransitionCurves curves, CancellationToken token = default, bool rotate = true)
         {
-            var levelToken = AsyncCancellation.Token;
             float transition = 0;
 
-            Vector3 startPos = transform.position;
-            Quaternion startRot = transform.rotation;
+            var startPos = transform.position;
+            var startRot = transform.rotation;
             while (transition < 1)
             {
-                if (AsyncCancellation.IsCancelled(token, levelToken)) return;
+                if (token.IsCancellationRequested) return;
                 transition += Time.deltaTime / curves.Duration;
 
                 var nextPosition = Vector3.Lerp(startPos, targetPos, curves.MoveCurve.Evaluate(transition));
                 nextPosition.y += curves.HeightCurve.Evaluate(transition);
                 transform.position = nextPosition;
 
-                float scaleValue = curves.ScaleCurve.Evaluate(transition);
+                var scaleValue = curves.ScaleCurve.Evaluate(transition);
                 transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
 
                 transform.rotation = Quaternion.Lerp(startRot, targetRotation, transition);
@@ -194,13 +188,12 @@ namespace UtilsSubmodule.Extensions
         public static async Task MoveAsync(this Transform transform, Transform target, int speed,
             CancellationToken token = default)
         {
-            var levelToken = AsyncCancellation.Token;
             float transition = 0;
-            Vector3 startPos = transform.position;
+            var startPos = transform.position;
             while (transition < 1)
             {
-                if (AsyncCancellation.IsCancelled(token, levelToken)) return;
-                float timeLeft = target.DistanceTo(startPos) / speed;
+                if (token.IsCancellationRequested) return;
+                var timeLeft = target.DistanceTo(startPos) / speed;
 
                 transition += Time.deltaTime / timeLeft;
                 transform.position = Vector3.Lerp(startPos, target.position, transition);
