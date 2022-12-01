@@ -7,11 +7,11 @@ namespace UtilsSubmodule
         public event System.Action OnTargetFound;
         public T CurrentTarget;
         private readonly ScannerTrigger _trigger;
-        private readonly string _tag;
+        private readonly string[] _tags;
 
-        public Scanner(ScannerTrigger trigger, string tag = "")
+        public Scanner(ScannerTrigger trigger, params string[] tags)
         {
-            _tag = tag;
+            _tags = tags;
             _trigger = trigger;
             Run();
         }
@@ -31,7 +31,7 @@ namespace UtilsSubmodule
 
         private void TriggerCheck(Collider collider)
         {
-            if (_tag.Length > 0 && !collider.CompareTag(_tag)) return;
+            if (_tags.Length > 0 && !TagCheck(collider)) return;
 
             var newTarget = collider.GetComponent<T>();
             if (newTarget == null || !newTarget.enabled) return;
@@ -41,6 +41,16 @@ namespace UtilsSubmodule
             if (newTarget == CurrentTarget) return;
 
             CurrentTarget = newTarget;
+        }
+
+        private bool TagCheck(in Collider collider)
+        {
+            for (int i = 0; i < _tags.Length; i++)
+            {
+                if (collider.CompareTag(_tags[i])) return true;
+            }
+
+            return false;
         }
     }
 }
