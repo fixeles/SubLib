@@ -1,4 +1,5 @@
-﻿using Game.Scripts.MonoBehaviours;
+﻿using System;
+using Game.Scripts.MonoBehaviours;
 using UnityEngine;
 
 namespace UtilsSubmodule.States
@@ -15,8 +16,8 @@ namespace UtilsSubmodule.States
 
         public void Enter()
         {
-            _unit.Agent.destination = _unit.transform.position;
-            _unit.Agent.isStopped = true;
+            _unit.Agent.ResetPath();
+            _unit.Agent.enabled = false;
             _unit.Animator.SetTrigger(DeathHash);
         }
 
