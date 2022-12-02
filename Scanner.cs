@@ -9,6 +9,8 @@ namespace UtilsSubmodule
         private readonly ScannerTrigger _trigger;
         private readonly string[] _tags;
 
+        public float Radius => _trigger.MaxRadius;
+
         public Scanner(ScannerTrigger trigger, params string[] tags)
         {
             _tags = tags;
