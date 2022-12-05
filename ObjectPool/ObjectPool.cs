@@ -28,7 +28,6 @@ namespace UtilsSubmodule.ObjectPool
             {
                 _currentIndex++;
                 if (_currentIndex >= Pool.Count) _currentIndex = 0;
-                // if (Pool[_currentIndex] == null)
                 if (!Pool[_currentIndex])
                 {
                     Pool.RemoveAt(_currentIndex);
