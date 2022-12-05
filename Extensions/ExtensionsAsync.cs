@@ -185,7 +185,7 @@ namespace UtilsSubmodule.Extensions
             }
         }
 
-        public static async Task MoveAsync(this Transform transform, Transform target, int speed,
+        public static async Task MoveAsync(this Transform transform, Transform target, int speed, bool look = false,
             CancellationToken token = default)
         {
             float transition = 0;
@@ -197,7 +197,7 @@ namespace UtilsSubmodule.Extensions
 
                 transition += Time.deltaTime / timeLeft;
                 transform.position = Vector3.Lerp(startPos, target.position, transition);
-
+                if (look) transform.LookAt(target);
                 await Task.Yield();
             }
         }
