@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ExtensionsMain;
+using UnityEngine;
 
 namespace UtilsSubmodule
 {
@@ -41,7 +42,7 @@ namespace UtilsSubmodule
             _trigger.Reset();
             OnTargetFound?.Invoke();
             if (newTarget == CurrentTarget) return;
-
+            if (CurrentTarget && CurrentTarget.transform.DistanceTo(newTarget.transform) > 0.5f) return;
             CurrentTarget = newTarget;
         }
 
