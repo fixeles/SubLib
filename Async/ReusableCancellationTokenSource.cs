@@ -14,6 +14,7 @@ namespace UtilsSubmodule.Async
             await Dispose();
 
             _cts = CancellationTokenSource.CreateLinkedTokenSource(AsyncCancellation.Token);
+            AsyncCancellation.DisposePool.Add(_cts);
             return _cts.Token;
         }
 

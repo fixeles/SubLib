@@ -1,32 +1,45 @@
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AsyncCancellation : MonoBehaviour
+namespace UtilsSubmodule.Async
 {
-    private static CancellationTokenSource _cts;
-    public static CancellationToken Token => _cts.Token;
-
-    private void Awake()
+    public class AsyncCancellation : MonoBehaviour
     {
-        _cts = new();
-    }
+        public static readonly List<IDisposable> DisposePool = new();
+        private static CancellationTokenSource _cts;
+        public static CancellationToken Token => _cts.Token;
 
-    /*public static bool IsCancelled(params CancellationToken[] tokens)
-    {
-        for (int i = 0; i < tokens.Length; i++)
+        private void Awake()
         {
-            if (tokens[i].IsCancellationRequested) return true;
+            _cts = new();
         }
 
-        return false;
-    }*/
+        private static async void Dispose()
+        {
+            await Task.Yield();
+            for (int i = 0; i < DisposePool.Count; i++)
+            {
+                DisposePool[i].Dispose();
+            }
 
-    private async void OnDisable()
-    {
-        var cts = _cts;
-        cts.Cancel();
-        await Task.Delay(30000);
-        cts.Dispose();
+            DisposePool.Clear();
+        }
+
+        private void OnDestroy()
+        {
+            Dispose();
+        }
+
+        private async void OnDisable()
+        {
+            Dispose();
+            var cts = _cts;
+            cts.Cancel();
+            await Task.Delay(30000);
+            cts.Dispose();
+        }
     }
 }

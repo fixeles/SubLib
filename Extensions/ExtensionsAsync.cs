@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using ExtensionsMain;
@@ -8,6 +9,19 @@ namespace UtilsSubmodule.Extensions
 {
     public static class ExtensionsAsync
     {
+        public static async Task FadeAsync(this CanvasGroup group, CancellationToken token, float endValue,
+            float duration = 0.1f)
+        {
+            float transition = 0;
+            while (transition < 1)
+            {
+                transition += Time.deltaTime / Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
+                group.alpha = Mathf.Lerp(group.alpha, endValue, transition);
+                await Task.Yield();
+                if (token.IsCancellationRequested) return;
+            }
+        }
+
         public static async Task BlinkAsync(this Renderer renderer, CancellationToken token, float duration = 0.1f)
         {
             await renderer.RecolorAsync(Color.white, token, duration / 2);
