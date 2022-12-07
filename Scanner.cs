@@ -19,6 +19,9 @@ namespace UtilsSubmodule
             Run();
         }
 
+        public void Reset() => CurrentTarget = null;
+
+
         public void Run()
         {
             _trigger.enabled = true;
