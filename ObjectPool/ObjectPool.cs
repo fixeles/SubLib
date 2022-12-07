@@ -4,7 +4,7 @@ using UnityEngine;
 namespace UtilsSubmodule.ObjectPool
 {
     [System.Serializable]
-    public struct ObjectPool<T> where T : MonoBehaviour, IPoolObject
+    public class ObjectPool<T> where T : MonoBehaviour, IPoolObject
     {
         [field: SerializeField, ReadOnly] public List<T> Pool { get; private set; }
         [SerializeField] private Transform _parent;

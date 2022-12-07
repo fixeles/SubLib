@@ -1,8 +1,9 @@
-using System.Collections.Generic;
-
-public interface IPoolObject
+namespace UtilsSubmodule.ObjectPool
 {
-    void SwitchActive(bool value);
+    public interface IPoolObject
+    {
+        void SwitchActive(bool value);
 
-    bool IsActive();
+        bool IsActive();
+    }
 }
