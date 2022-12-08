@@ -11,29 +11,16 @@ namespace UtilsSubmodule.Async
         public async Task<CancellationToken> Create()
         {
             Cancel();
-            await Dispose();
-
+            await Task.Yield();
+           
             _cts = CancellationTokenSource.CreateLinkedTokenSource(AsyncCancellation.Token);
             AsyncCancellation.DisposePool.Add(_cts);
             return _cts.Token;
         }
 
-        public void DisposeAfterCancel()
-        {
-            Cancel();
-            _ = Dispose();
-        }
-
         public void Cancel()
         {
             _cts?.Cancel();
-        }
-
-        private async Task Dispose()
-        {
-            await Task.Yield();
-            _cts?.Dispose();
-            _cts = null;
         }
     }
 }

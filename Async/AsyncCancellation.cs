@@ -20,17 +20,13 @@ namespace UtilsSubmodule.Async
         private static async void Dispose()
         {
             await Task.Yield();
+            Debug.Log(DisposePool.Count + " tokens disposed");
             for (int i = 0; i < DisposePool.Count; i++)
             {
                 DisposePool[i].Dispose();
             }
 
             DisposePool.Clear();
-        }
-
-        private void OnDestroy()
-        {
-            Dispose();
         }
 
         private async void OnDisable()
