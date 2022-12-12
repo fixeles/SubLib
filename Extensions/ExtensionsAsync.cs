@@ -21,6 +21,21 @@ namespace UtilsSubmodule.Extensions
                 if (token.IsCancellationRequested) return;
             }
         }
+        
+        public static async Task FadeAsync(this Image image, CancellationToken token, float endValue,
+            float duration = 0.1f)
+        {
+            var color = image.color;
+            float transition = 0;
+            while (transition < 1)
+            {
+                transition += Time.deltaTime / Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
+                color.a = Mathf.Lerp(color.a, endValue, transition);
+                image.color = color;
+                await Task.Yield();
+                if (token.IsCancellationRequested) return;
+            }
+        }
 
         public static async Task BlinkAsync(this Renderer renderer, CancellationToken token, float duration = 0.1f)
         {
