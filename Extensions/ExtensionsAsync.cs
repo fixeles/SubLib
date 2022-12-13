@@ -21,7 +21,7 @@ namespace UtilsSubmodule.Extensions
                 if (token.IsCancellationRequested) return;
             }
         }
-        
+
         public static async Task FadeAsync(this Image image, CancellationToken token, float endValue,
             float duration = 0.1f)
         {
@@ -50,18 +50,18 @@ namespace UtilsSubmodule.Extensions
             await renderer.RecolorAsync(Color.black, token, duration / 2);
         }
 
-        public static async Task RecolorAsync(this Renderer renderer, Color target, CancellationToken token,
+        public static async Task RecolorAsync(this Renderer material, Color target, CancellationToken token,
             float duration = 0.1f)
         {
             float transition = 0;
             duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
 
             int propertyID =
-                renderer.material.shader.GetPropertyNameId(
-                    renderer.material.shader.FindPropertyIndex("_EmissionColor"));
-            Color startColor = renderer.material.GetColor(propertyID);
+                material.material.shader.GetPropertyNameId(
+                    material.material.shader.FindPropertyIndex("_EmissionColor"));
+            Color startColor = material.material.GetColor(propertyID);
 
-            var materials = renderer.materials;
+            var materials = material.materials;
             while (transition < 1)
             {
                 if (token.IsCancellationRequested) return;
@@ -71,6 +71,23 @@ namespace UtilsSubmodule.Extensions
                     materials[i].SetColor(propertyID, Color.Lerp(startColor, target, transition));
                 }
 
+
+                await Task.Yield();
+            }
+        }
+
+        public static async Task RecolorAsync(this Material material, Color target,int propertyID, CancellationToken token,
+            float duration = 0.1f)
+        {
+            float transition = 0;
+            duration = Mathf.Clamp(duration, 0.1f, float.MaxValue);
+            Color startColor = material.GetColor(propertyID);
+
+            while (transition < 1)
+            {
+                if (token.IsCancellationRequested) return;
+                transition += Time.deltaTime / duration;
+                material.SetColor(propertyID, Color.Lerp(startColor, target, transition));
 
                 await Task.Yield();
             }
