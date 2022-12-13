@@ -1,16 +1,34 @@
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace UtilsSubmodule.ObjectPool
 {
     [System.Serializable]
     public class ObjectPool<T> where T : MonoBehaviour, IPoolObject
     {
-        [field: SerializeField, ReadOnly] public List<T> Pool { get; private set; }
+        [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public List<T> Pool { get; private set; }
         [SerializeField] private Transform _parent;
         [SerializeField] private T _prefab;
+
+        public T Prefab => _prefab;
+
         private int _currentIndex;
 
+        [Button]
+        public void Fill(int size = 10)
+        {
+            size = Mathf.Clamp(size, 0, size);
+            for (int i = 0; i < size; i++)
+            {
+                PrefabUtility.InstantiatePrefab(_prefab,_parent);
+            }
+            Pool.Clear();
+            Pool.AddRange(_parent.GetComponentsInChildren<T>());
+        }
+        
         public void Init()
         {
             Pool.Clear();
