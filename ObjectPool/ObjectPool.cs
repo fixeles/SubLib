@@ -9,7 +9,9 @@ namespace UtilsSubmodule.ObjectPool
     [System.Serializable]
     public class ObjectPool<T> where T : MonoBehaviour, IPoolObject
     {
-        [field: SerializeField, Sirenix.OdinInspector.ReadOnly] public List<T> Pool { get; private set; }
+        [field: SerializeField, Sirenix.OdinInspector.ReadOnly]
+        public List<T> Pool { get; private set; }
+
         [SerializeField] private Transform _parent;
         [SerializeField] private T _prefab;
 
@@ -17,18 +19,22 @@ namespace UtilsSubmodule.ObjectPool
 
         private int _currentIndex;
 
+#if UNITY_EDITOR
         [Button]
         public void Fill(int size = 10)
         {
             size = Mathf.Clamp(size, 0, size);
             for (int i = 0; i < size; i++)
             {
-                PrefabUtility.InstantiatePrefab(_prefab,_parent);
+                PrefabUtility.InstantiatePrefab(_prefab, _parent);
             }
+
             Pool.Clear();
             Pool.AddRange(_parent.GetComponentsInChildren<T>());
         }
-        
+#endif
+
+
         public void Init()
         {
             Pool.Clear();
