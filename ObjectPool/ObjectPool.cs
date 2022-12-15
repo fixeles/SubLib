@@ -85,6 +85,14 @@ namespace UtilsSubmodule.ObjectPool
             return newObject;
         }
 
+        public void ReleaseAll()
+        {
+            for (int i = 0; i < Pool.Count; i++)
+            {
+                Pool[i].SwitchActive(false);
+            }
+        }
+
         public T Get() => Get(Vector3.zero, Quaternion.identity);
         public T Get(Vector3 position) => Get(position, Quaternion.identity);
         public T Get(Quaternion rotation) => Get(Vector3.zero, rotation);
