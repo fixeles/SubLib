@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ExtensionsMbehs;
+using Game.Scripts.MonoBehaviours;
 using UnityEngine;
-using UtilsSubmodule;
 using UtilsSubmodule.Async;
 
-namespace Game.Scripts.MonoBehaviours
+namespace UtilsSubmodule
 {
     public class Scanner : MonoBehaviour
     {
@@ -47,6 +48,11 @@ namespace Game.Scripts.MonoBehaviours
 
             CurrentTarget = scanList.GetNearestObject(transform.position);
             OnTargetFound?.Invoke();
+        }
+        
+        private void OnDestroy()
+        {
+            Stop();
         }
 
         private bool TagCheck(in Collider overlappedCollider)

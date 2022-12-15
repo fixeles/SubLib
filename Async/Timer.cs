@@ -56,7 +56,7 @@ namespace UtilsSubmodule.Async
                 await Task.Delay(StepMS);
                 if (token.IsCancellationRequested)
                 {
-                    ActiveTimers = new List<Timer>();
+                    ActiveTimers.Clear();
                     _isStarted = false;
                     return;
                 }
