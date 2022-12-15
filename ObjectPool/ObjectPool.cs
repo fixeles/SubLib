@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 namespace UtilsSubmodule.ObjectPool
 {
     [System.Serializable]
-    public class ObjectPool<T> where T : MonoBehaviour, IPoolObject
+    public class ObjectPool<T> where T : MonoBehaviour, IPooledObject
     {
         [field: SerializeField, Sirenix.OdinInspector.ReadOnly]
         public List<T> Pool { get; private set; }
@@ -29,24 +29,25 @@ namespace UtilsSubmodule.ObjectPool
                 PrefabUtility.InstantiatePrefab(_prefab, _parent);
             }
 
-            Pool.Clear();
-            Pool.AddRange(_parent.GetComponentsInChildren<T>());
+            Init();
         }
 #endif
 
 
-        public void Init()
+        private void Init()
         {
             Pool.Clear();
-            Pool.AddRange(_parent.GetComponentsInChildren<T>());
-            foreach (var poolObject in Pool)
+            Pool.AddRange(_parent.GetComponentsInChildren<T>(true));
+            foreach (var pooledObject in Pool)
             {
-                poolObject.SwitchActive(false);
+                pooledObject.Prepare();
             }
         }
 
-        public T Get(Vector3 position, Quaternion rotation)
+        public T Get(in Vector3 position, in Quaternion rotation)
         {
+            if (Pool.Count == 0) return CreateNew(position, rotation);
+            
             var counter = Pool.Count;
             while (counter > 0)
             {
@@ -69,19 +70,23 @@ namespace UtilsSubmodule.ObjectPool
                     var transform = poolObject.transform;
                     transform.position = position;
                     transform.rotation = rotation;
-                    poolObject.SwitchActive(true);
+                    poolObject.GetPooled();
                     return poolObject;
                 }
 
                 counter--;
             }
 
-            var newObject = Object.Instantiate(_prefab, position, rotation, _parent);
-            Pool.Add(newObject);
+            return CreateNew(position, rotation);
+        }
 
+        private T CreateNew(in Vector3 position, in Quaternion rotation)
+        {
 #if UNITY_EDITOR
             Debug.Log($"New pool object was created. {Pool.Count} objects in Pool");
 #endif
+            var newObject = Object.Instantiate(_prefab, position, rotation, _parent);
+            Pool.Add(newObject);
             return newObject;
         }
 
@@ -89,12 +94,12 @@ namespace UtilsSubmodule.ObjectPool
         {
             for (int i = 0; i < Pool.Count; i++)
             {
-                Pool[i].SwitchActive(false);
+                Pool[i].ReleasePooled();
             }
         }
 
         public T Get() => Get(Vector3.zero, Quaternion.identity);
-        public T Get(Vector3 position) => Get(position, Quaternion.identity);
-        public T Get(Quaternion rotation) => Get(Vector3.zero, rotation);
+        public T Get(in Vector3 position) => Get(position, Quaternion.identity);
+        public T Get(in Quaternion rotation) => Get(Vector3.zero, rotation);
     }
 }
