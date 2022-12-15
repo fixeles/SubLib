@@ -21,7 +21,7 @@ namespace UtilsSubmodule.ObjectPool
 
 #if UNITY_EDITOR
         [Button]
-        public void Fill(int size = 10)
+        public void Fill(int size = 1)
         {
             size = Mathf.Clamp(size, 0, size);
             for (int i = 0; i < size; i++)
