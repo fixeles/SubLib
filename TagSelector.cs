@@ -9,6 +9,7 @@ namespace UtilsSubmodule
         public readonly bool UseDefaultTagFieldDrawer = false;
     }
 
+#if UNITY_EDITOR
     [CustomPropertyDrawer(typeof(TagSelectorAttribute))]
     public class TagSelectorPropertyDrawer : PropertyDrawer
     {
@@ -77,4 +78,5 @@ namespace UtilsSubmodule
             }
         }
     }
+#endif
 }
