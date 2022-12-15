@@ -8,6 +8,7 @@ namespace UtilsSubmodule.Async
 {
     public class AsyncCancellation : MonoBehaviour
     {
+        public static event Action OnDisposeEvent;
         public static readonly List<IDisposable> DisposePool = new();
         private static CancellationTokenSource _cts;
         public static CancellationToken Token => _cts.Token;
@@ -27,6 +28,7 @@ namespace UtilsSubmodule.Async
             }
 
             DisposePool.Clear();
+            OnDisposeEvent?.Invoke();
         }
 
         private async void OnDisable()

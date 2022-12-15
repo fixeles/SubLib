@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -57,10 +58,18 @@ namespace UtilsSubmodule
 
         public static class Async
         {
-            public static async Task<bool> Delay(int delayMS, CancellationToken token)
+            public static async Task<bool> Delay(float delaySeconds, CancellationToken token)
             {
-                await Task.Delay(delayMS);
-                return !token.IsCancellationRequested;
+                try
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(delaySeconds), token);
+                }
+                catch
+                {
+                    return false;
+                }
+
+                return true;
             }
         }
 
