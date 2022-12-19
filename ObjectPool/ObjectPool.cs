@@ -28,14 +28,7 @@ namespace UtilsSubmodule.ObjectPool
             {
                 PrefabUtility.InstantiatePrefab(_prefab, _parent);
             }
-
-            Init();
-        }
-#endif
-
-
-        private void Init()
-        {
+            
             Pool.Clear();
             Pool.AddRange(_parent.GetComponentsInChildren<T>(true));
             foreach (var pooledObject in Pool)
@@ -43,6 +36,7 @@ namespace UtilsSubmodule.ObjectPool
                 pooledObject.Prepare();
             }
         }
+#endif
 
         public T Get(in Vector3 position, in Quaternion rotation)
         {
