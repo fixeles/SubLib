@@ -11,7 +11,7 @@ namespace UtilsSubmodule
     public class Scanner : MonoBehaviour
     {
         public event System.Action OnTargetFound;
-        [ReadOnly] public Hitable CurrentTarget;
+        [@ReadOnly] public Hitable CurrentTarget;
         [SerializeField, Min(0)] private float _radius;
 
         [SerializeField, TagSelector] private string[] _tags;
