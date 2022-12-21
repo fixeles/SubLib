@@ -14,6 +14,7 @@ namespace UtilsSubmodule.Async
         private readonly System.Action _action;
         private readonly bool _loop;
         private int _frequencyMS;
+        private bool _destroyRequest;
 
         public int FrequencyMS
         {
@@ -32,6 +33,7 @@ namespace UtilsSubmodule.Async
 
         public void Destroy()
         {
+            _destroyRequest = true;
             ActiveTimers.Remove(this);
         }
 
@@ -64,6 +66,7 @@ namespace UtilsSubmodule.Async
                 for (int i = ActiveTimers.Count - 1; i >= 0; i--)
                 {
                     Timer timer = ActiveTimers[i];
+                    if (timer._destroyRequest) continue;
                     if (!timer.IsReady()) continue;
                     if (!timer._loop) timer.Destroy();
                 }

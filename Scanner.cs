@@ -50,7 +50,7 @@ namespace UtilsSubmodule
             OnTargetFound?.Invoke();
         }
         
-        private void OnDestroy()
+        private void OnDisable()
         {
             Stop();
         }
