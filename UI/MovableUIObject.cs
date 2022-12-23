@@ -22,7 +22,7 @@ public class MovableUIObject : MonoBehaviour
 
     private void OnEnable()
     {
-        _cachedTransform.position = StaticData.Instance.Camera.WorldToScreenPoint(Target.position);
+        _cachedTransform.position = StaticData.Instance.MainCamera.WorldToScreenPoint(Target.position);
     }
 
     private void LateUpdate()
@@ -30,6 +30,6 @@ public class MovableUIObject : MonoBehaviour
         _cachedTransform.position = dampingSpeed == 0
             ? Target.position
             : Vector3.Lerp(_cachedTransform.position,
-                StaticData.Instance.Camera.WorldToScreenPoint(Target.position), Time.deltaTime * dampingSpeed);
+                StaticData.Instance.MainCamera.WorldToScreenPoint(Target.position), Time.deltaTime * dampingSpeed);
     }
 }
