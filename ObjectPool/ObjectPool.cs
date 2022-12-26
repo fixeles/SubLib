@@ -8,13 +8,12 @@ namespace UtilsSubmodule.ObjectPool
     [System.Serializable]
     public class ObjectPool<T> where T : Component
     {
-        [SerializeField, ReadOnly] private ComponentHashSet<T> _pool;
+        [SerializeField, ReadOnly] private SerializableHashSet<T> _pool;
 
         [SerializeField] private Transform _parent;
         [SerializeField] private T _prefab;
 
         public T Prefab => _prefab;
-
 
 #if UNITY_EDITOR
         [Button]
@@ -37,7 +36,7 @@ namespace UtilsSubmodule.ObjectPool
 
         public T Get(in Vector3 position, in Quaternion rotation)
         {
-            var pooledObject = _pool.FirstOrDefault();
+            var pooledObject = _pool.FirstOrDefault(item => !item.gameObject.activeSelf);
             if (!pooledObject)
             {
                 pooledObject = CreateNew(position, rotation);

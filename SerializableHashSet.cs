@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -23,10 +24,11 @@ public class SerializableHashSet<T> : ISerializationCallbackReceiver, ISet<T>, I
 
     #endregion Constructors
 
-    public bool Add(T item) => HashSet.Add(item);
 
     #region Interface forwarding to the _hashset
 
+    public bool Add(T item) => HashSet.Add(item);
+    public T FirstOrDefault(Func<T, bool> prediction) => HashSet.FirstOrDefault(prediction);
     public bool Remove(T item) => HashSet.Remove(item);
     public int Count => HashSet.Count;
     public bool IsReadOnly => false;
