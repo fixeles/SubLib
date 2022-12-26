@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
@@ -7,17 +6,15 @@ using Object = UnityEngine.Object;
 namespace UtilsSubmodule.ObjectPool
 {
     [System.Serializable]
-    public class ObjectPool<T> where T : MonoBehaviour, IPooledObject
+    public class ObjectPool<T> where T : Component
     {
-        [field: SerializeField, Sirenix.OdinInspector.ReadOnly]
-        public List<T> Pool { get; private set; }
+        [SerializeField, ReadOnly] private ComponentHashSet<T> _pool;
 
         [SerializeField] private Transform _parent;
         [SerializeField] private T _prefab;
 
         public T Prefab => _prefab;
 
-        private int _currentIndex;
 
 #if UNITY_EDITOR
         [Button]
@@ -28,68 +25,42 @@ namespace UtilsSubmodule.ObjectPool
             {
                 PrefabUtility.InstantiatePrefab(_prefab, _parent);
             }
-            
-            Pool.Clear();
-            Pool.AddRange(_parent.GetComponentsInChildren<T>(true));
-            foreach (var pooledObject in Pool)
+
+            _pool.Clear();
+            _pool.UnionWith(_parent.GetComponentsInChildren<T>(true));
+            foreach (var pooledObject in _pool)
             {
-                pooledObject.Prepare();
+                pooledObject.gameObject.SetActive(false);
             }
         }
 #endif
 
         public T Get(in Vector3 position, in Quaternion rotation)
         {
-            if (Pool.Count == 0) return CreateNew(position, rotation);
-            
-            var counter = Pool.Count;
-            while (counter > 0)
+            var pooledObject = _pool.FirstOrDefault();
+            if (!pooledObject)
             {
-                _currentIndex++;
-                if (_currentIndex >= Pool.Count) _currentIndex = 0;
-                if (!Pool[_currentIndex])
-                {
-                    Pool.RemoveAt(_currentIndex);
-                    _currentIndex--;
-#if UNITY_EDITOR
-                    Debug.Log("Destroyed object in pool");
-#endif
-                    continue;
-                }
-
-                if (!Pool[_currentIndex].IsActive())
-                {
-                    var poolObject = Pool[_currentIndex];
-
-                    var transform = poolObject.transform;
-                    transform.position = position;
-                    transform.rotation = rotation;
-                    poolObject.GetPooled();
-                    return poolObject;
-                }
-
-                counter--;
+                pooledObject = CreateNew(position, rotation);
+                _pool.Add(pooledObject);
+                return pooledObject;
             }
 
-            return CreateNew(position, rotation);
+            var transform = pooledObject.transform;
+            transform.position = position;
+            transform.rotation = rotation;
+            pooledObject.gameObject.SetActive(true);
+            return pooledObject;
         }
 
         private T CreateNew(in Vector3 position, in Quaternion rotation)
         {
-#if UNITY_EDITOR
-            Debug.Log($"New pool object was created. {Pool.Count} objects in Pool");
-#endif
             var newObject = Object.Instantiate(_prefab, position, rotation, _parent);
-            Pool.Add(newObject);
-            return newObject;
-        }
+            _pool.Add(newObject);
 
-        public void ReleaseAll()
-        {
-            for (int i = 0; i < Pool.Count; i++)
-            {
-                Pool[i].ReleasePooled();
-            }
+#if UNITY_EDITOR
+            Debug.Log($"New pool object was created. {_pool.Count} objects in Pool");
+#endif
+            return newObject;
         }
 
         public T Get() => Get(Vector3.zero, Quaternion.identity);

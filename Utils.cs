@@ -88,7 +88,9 @@ namespace UtilsSubmodule
                     .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<T>)
                     .ToArray();
 #endif
+#pragma warning disable CS0162
                 return null;
+#pragma warning restore CS0162
             }
         }
     }
