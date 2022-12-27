@@ -1,6 +1,5 @@
-using System;
 using System.Threading;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using ExtensionsMain;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +8,7 @@ namespace UtilsSubmodule.Extensions
 {
     public static class ExtensionsAsync
     {
-        public static async Task FadeAsync(this CanvasGroup group, CancellationToken token, float endValue,
+        public static async UniTask FadeAsync(this CanvasGroup group, CancellationToken token, float endValue,
             float duration = 0.1f)
         {
             float transition = 0;
@@ -17,12 +16,12 @@ namespace UtilsSubmodule.Extensions
             {
                 transition += Time.deltaTime / Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
                 group.alpha = Mathf.Lerp(group.alpha, endValue, transition);
-                await Task.Yield();
+                await UniTask.Yield();
                 if (token.IsCancellationRequested) return;
             }
         }
 
-        public static async Task FadeAsync(this Image image, CancellationToken token, float endValue,
+        public static async UniTask FadeAsync(this Image image, CancellationToken token, float endValue,
             float duration = 0.1f)
         {
             var color = image.color;
@@ -32,25 +31,25 @@ namespace UtilsSubmodule.Extensions
                 transition += Time.deltaTime / Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
                 color.a = Mathf.Lerp(color.a, endValue, transition);
                 image.color = color;
-                await Task.Yield();
+                await UniTask.Yield();
                 if (token.IsCancellationRequested) return;
             }
         }
 
-        public static async Task BlinkAsync(this Renderer renderer, CancellationToken token, float duration = 0.1f)
+        public static async UniTask BlinkAsync(this Renderer renderer, CancellationToken token, float duration = 0.1f)
         {
             await renderer.RecolorAsync(Color.white, token, duration / 2);
             await renderer.RecolorAsync(Color.black, token, duration / 2);
         }
 
-        public static async Task BlinkAsync(this Renderer renderer, Color color, CancellationToken token,
+        public static async UniTask BlinkAsync(this Renderer renderer, Color color, CancellationToken token,
             float duration = 0.1f)
         {
             await renderer.RecolorAsync(color, token, duration / 2);
             await renderer.RecolorAsync(Color.black, token, duration / 2);
         }
 
-        public static async Task RecolorAsync(this Renderer material, Color target, CancellationToken token,
+        public static async UniTask RecolorAsync(this Renderer material, Color target, CancellationToken token,
             float duration = 0.1f)
         {
             float transition = 0;
@@ -72,11 +71,12 @@ namespace UtilsSubmodule.Extensions
                 }
 
 
-                await Task.Yield();
+                await UniTask.Yield();
             }
         }
 
-        public static async Task RecolorAsync(this Material material, Color target,int propertyID, CancellationToken token,
+        public static async UniTask RecolorAsync(this Material material, Color target, int propertyID,
+            CancellationToken token,
             float duration = 0.1f)
         {
             float transition = 0;
@@ -89,34 +89,34 @@ namespace UtilsSubmodule.Extensions
                 transition += Time.deltaTime / duration;
                 material.SetColor(propertyID, Color.Lerp(startColor, target, transition));
 
-                await Task.Yield();
+                await UniTask.Yield();
             }
         }
 
-        public static async Task FillAsync(this Image image, CancellationToken token, float speed = 1)
+        public static async UniTask FillAsync(this Image image, CancellationToken token, float speed = 1)
         {
             while (true)
             {
                 image.fillAmount += Time.deltaTime * speed;
                 if (image.fillAmount is 0 or 1) return;
-                await Task.Yield();
+                await UniTask.Yield();
                 if (token.IsCancellationRequested) return;
             }
         }
 
-        public static async Task FadeAsync(this Image image, CancellationToken token, float duration = 0.1f)
+        public static async UniTask FadeAsync(this Image image, CancellationToken token, float duration = 0.1f)
         {
             var color = Color.white;
             while (color.a > 0)
             {
                 color.a -= Time.deltaTime / duration;
                 image.color = color;
-                await Task.Yield();
+                await UniTask.Yield();
                 if (token.IsCancellationRequested) return;
             }
         }
 
-        public static async Task MoveAsync(this Transform transform, Vector3 target, CancellationToken token,
+        public static async UniTask MoveAsync(this Transform transform, Vector3 target, CancellationToken token,
             float duration = 0.1f)
         {
             float transition = 0;
@@ -129,11 +129,11 @@ namespace UtilsSubmodule.Extensions
                 transition += Time.deltaTime / duration;
                 transform.position = Vector3.Lerp(startPos, target, transition);
 
-                await Task.Yield();
+                await UniTask.Yield();
             }
         }
 
-        public static async Task LerpAsync(this Transform transform, Transform target, CancellationToken token,
+        public static async UniTask LerpAsync(this Transform transform, Transform target, CancellationToken token,
             float duration = 0.1f, bool rotate = true)
         {
             float transition = 0;
@@ -147,14 +147,14 @@ namespace UtilsSubmodule.Extensions
                 transition += Time.deltaTime / duration;
                 transform.position = Vector3.Lerp(startPos, target.position, transition);
                 if (rotate) transform.rotation = Quaternion.Lerp(startRot, target.rotation, transition);
-                await Task.Yield();
+                await UniTask.Yield();
             }
 
             transform.position = target.position;
             if (rotate) transform.rotation = target.rotation;
         }
 
-        public static async Task RescaleAsync(this Transform transform, Vector3 from, Vector3 to,
+        public static async UniTask RescaleAsync(this Transform transform, Vector3 from, Vector3 to,
             CancellationToken token, float duration = 0.1f)
         {
             float transition = 0;
@@ -163,11 +163,12 @@ namespace UtilsSubmodule.Extensions
                 if (token.IsCancellationRequested) return;
                 transition += Time.deltaTime / duration;
                 transform.localScale = Vector3.Lerp(from, to, transition);
-                await Task.Yield();
+                await UniTask.Yield();
             }
         }
 
-        public static async Task HorizontalSoftLookAtAsync(this Transform transform, Transform target, float duration,
+        public static async UniTask HorizontalSoftLookAtAsync(this Transform transform, Transform target,
+            float duration,
             CancellationToken token, float rotationSpeed = 5)
         {
             float timeElapsed = 0;
@@ -176,12 +177,12 @@ namespace UtilsSubmodule.Extensions
                 timeElapsed += Time.deltaTime;
 
                 transform.HorizontalSoftLookAt(target.position, rotationSpeed);
-                await Task.Yield();
+                await UniTask.Yield();
                 if (token.IsCancellationRequested) return;
             }
         }
 
-        public static async Task CurveMoveAsync(this Transform transform, Transform target,
+        public static async UniTask CurveMoveAsync(this Transform transform, Transform target,
             TransitionCurves curves, CancellationToken token = default, bool rotate = true)
         {
             float transition = 0;
@@ -202,11 +203,11 @@ namespace UtilsSubmodule.Extensions
                 transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
 
                 if (rotate) transform.rotation = Quaternion.Lerp(startRot, target.rotation, transition);
-                await Task.Yield();
+                await UniTask.Yield();
             }
         }
 
-        public static async Task CurveMoveAsync(this Transform transform, Vector3 targetPos,
+        public static async UniTask CurveMoveAsync(this Transform transform, Vector3 targetPos,
             Quaternion targetRotation,
             TransitionCurves curves, CancellationToken token = default, bool rotate = true)
         {
@@ -227,11 +228,11 @@ namespace UtilsSubmodule.Extensions
                 transform.localScale = new Vector3(scaleValue, scaleValue, scaleValue);
 
                 transform.rotation = Quaternion.Lerp(startRot, targetRotation, transition);
-                await Task.Yield();
+                await UniTask.Yield();
             }
         }
 
-        public static async Task MoveAsync(this Transform transform, Transform target, int speed, bool look = false,
+        public static async UniTask MoveAsync(this Transform transform, Transform target, int speed, bool look = false,
             CancellationToken token = default)
         {
             float transition = 0;
@@ -244,7 +245,7 @@ namespace UtilsSubmodule.Extensions
                 transition += Time.deltaTime / timeLeft;
                 transform.position = Vector3.Lerp(startPos, target.position, transition);
                 if (look) transform.LookAt(target);
-                await Task.Yield();
+                await UniTask.Yield();
             }
         }
     }

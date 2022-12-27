@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace UtilsSubmodule.Async
@@ -18,9 +19,8 @@ namespace UtilsSubmodule.Async
             _cts = new();
         }
 
-        private static async void Dispose()
+        private static void Dispose()
         {
-            await Task.Yield();
             Debug.Log(DisposePool.Count + " tokens disposed");
             for (int i = 0; i < DisposePool.Count; i++)
             {
@@ -33,10 +33,11 @@ namespace UtilsSubmodule.Async
 
         private async void OnDisable()
         {
-            Dispose();
             var cts = _cts;
             cts.Cancel();
-            await Task.Delay(30000);
+            
+            await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+            Dispose();
             cts.Dispose();
         }
     }

@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -33,7 +34,7 @@ namespace UtilsSubmodule.ComponentInitializer.Editor
                 if (attribute is not ComponentDependency dependency) continue;
                 if (dependency.ComponentsCheck(obj)) continue;
 
-                await Task.Yield();
+                await UniTask.Yield();
                 Object.DestroyImmediate(obj);
             }
         }
