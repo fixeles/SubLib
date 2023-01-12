@@ -8,7 +8,7 @@ namespace UtilsSubmodule.ObjectPool
     [System.Serializable]
     public class ObjectPool<T> where T : Component
     {
-        [SerializeField, ReadOnly] private SerializableHashSet<T> _pool;
+        [SerializeField, @ReadOnly] private SerializableHashSet<T> _pool;
 
         [SerializeField] private Transform _parent;
         [SerializeField] private T _prefab;
