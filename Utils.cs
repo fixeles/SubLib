@@ -63,7 +63,7 @@ namespace UtilsSubmodule
             {
                 try
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(delaySeconds), token);
+                    await UniTask.Delay(TimeSpan.FromSeconds(delaySeconds), cancellationToken: token);
                 }
                 catch
                 {
