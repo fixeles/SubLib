@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using ExtensionsMain;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -58,11 +59,11 @@ namespace UtilsSubmodule
 
         public static class Async
         {
-            public static async Task<bool> Delay(float delaySeconds, CancellationToken token)
+            public static async UniTask<bool> Delay(float delaySeconds, CancellationToken token)
             {
                 try
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(delaySeconds), token);
+                    await UniTask.Delay(TimeSpan.FromSeconds(delaySeconds), cancellationToken: token);
                 }
                 catch
                 {
@@ -88,7 +89,9 @@ namespace UtilsSubmodule
                     .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<T>)
                     .ToArray();
 #endif
+#pragma warning disable CS0162
                 return null;
+#pragma warning restore CS0162
             }
         }
     }

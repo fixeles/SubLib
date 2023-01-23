@@ -1,36 +1,29 @@
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace UtilsSubmodule.Async
 {
     public class ReusableCancellationTokenSource
     {
         private CancellationTokenSource _cts;
+        private readonly CancellationToken _onDestroyToken;
 
-        public ReusableCancellationTokenSource()
+        public ReusableCancellationTokenSource(CancellationToken onDestroyToken)
         {
+            _onDestroyToken = onDestroyToken;
             AsyncCancellation.OnDisposeEvent += Reset;
         }
 
-        ~ReusableCancellationTokenSource()
-        {
-            AsyncCancellation.OnDisposeEvent -= Reset;
-        }
-
-        private void Reset()
-        {
-            _cts = null;
-        }
+        ~ReusableCancellationTokenSource() => AsyncCancellation.OnDisposeEvent -= Reset;
 
         public CancellationToken Token => _cts.Token;
+        private void Reset() => _cts = null;
 
-        public async Task<CancellationToken> Create()
+        public CancellationToken Create()
         {
             Cancel();
-            await Task.Yield();
+            //await UniTask.Yield();
 
-
-            _cts = CancellationTokenSource.CreateLinkedTokenSource(AsyncCancellation.Token);
+            _cts = CancellationTokenSource.CreateLinkedTokenSource(AsyncCancellation.Token, _onDestroyToken);
             AsyncCancellation.DisposePool.Add(_cts);
             return _cts.Token;
         }

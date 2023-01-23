@@ -33,7 +33,7 @@ namespace ExtensionsMain
         public static bool TrySetComponent<T>(this GameObject go, ref T component) where T : Component
         {
             if (component != null) return false;
-            
+
             component = go.GetComponent<T>();
             return true;
         }
@@ -54,14 +54,14 @@ namespace ExtensionsMain
             return Quaternion.Euler(angles);
         }
 
-        public static List<Transform> GetActiveChilds(this GameObject go)
+        public static List<Transform> GetChildrenWithName(this Transform transform, in string name)
         {
-            var array = go.GetComponentsInChildren<Transform>(go);
-            List<Transform> childs = new List<Transform>();
+            var childs = new List<Transform>();
+            transform.GetComponentsInChildren(childs);
 
-            for (int i = 1; i < array.Length; i++) //first is parent
+            for (int i = childs.Count - 1; i >= 0; i--)
             {
-                if (array[i].gameObject.activeSelf) childs.Add(array[i]);
+                if (!childs[i].name.Equals(name)) childs.RemoveAt(i);
             }
 
             return childs;

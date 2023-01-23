@@ -1,31 +1,30 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace UtilsSubmodule.Async
 {
     public class Timer
     {
-        private const int StepMS = 50;
-        private static List<Timer> ActiveTimers { get; set; }
+        private static HashSet<Timer> _activeTimers;
         private static bool _isStarted;
 
-        private int _currentTime;
+        private float _currentTime;
         private readonly System.Action _action;
         private readonly bool _loop;
-        private int _frequencyMS;
-        private bool _destroyRequest;
+        private float _frequency;
 
-        public int FrequencyMS
+        public float Frequency
         {
-            get => _frequencyMS;
-            set => _frequencyMS = Mathf.Clamp(value, 1, int.MaxValue);
+            get => _frequency;
+            set => _frequency = Mathf.Clamp(value, float.Epsilon, float.MaxValue);
         }
 
-        public Timer(int frequencyMS, System.Action action, bool loop = true)
+        public Timer(float frequency, System.Action action, bool loop = true)
         {
             _action = action;
-            FrequencyMS = frequencyMS;
+            Frequency = frequency;
             _loop = loop;
             _currentTime = 0;
             Init();
@@ -33,18 +32,16 @@ namespace UtilsSubmodule.Async
 
         public void Destroy()
         {
-            _destroyRequest = true;
-            ActiveTimers.Remove(this);
+            _activeTimers.Remove(this);
         }
 
         private async void Init()
         {
-            await Task.Delay(StepMS * 2);
-            ActiveTimers ??= new List<Timer>();
-            ActiveTimers.Add(this);
+            await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+            _activeTimers ??= new();
+            _activeTimers.Add(this);
 
             if (_isStarted) return;
-
             StartTimers();
         }
 
@@ -55,38 +52,34 @@ namespace UtilsSubmodule.Async
 
             while (true)
             {
-                await Task.Delay(StepMS);
+                await UniTask.Yield();
                 if (token.IsCancellationRequested)
                 {
-                    ActiveTimers.Clear();
+                    _activeTimers.Clear();
                     _isStarted = false;
                     return;
                 }
 
-                for (int i = ActiveTimers.Count - 1; i >= 0; i--)
+                foreach (var timer in _activeTimers)
                 {
-                    Timer timer = ActiveTimers[i];
-                    if (timer._destroyRequest) continue;
-                    if (!timer.IsReady()) continue;
+                    if (!timer.ReadyCheck()) continue;
                     if (!timer._loop) timer.Destroy();
                 }
             }
         }
 
-        private bool IsReady()
+        private bool ReadyCheck()
         {
-            _currentTime += StepMS;
-            if (_currentTime < FrequencyMS) return false;
+            _currentTime += Time.deltaTime;
+            if (_currentTime < Frequency) return false;
 
-
-            int iterations = _currentTime / FrequencyMS;
-            while (iterations > 0)
+            var iterations = _currentTime / Frequency;
+            while (iterations > 1)
             {
                 iterations--;
-                _currentTime -= FrequencyMS;
+                _currentTime -= Frequency;
                 _action.Invoke();
             }
-
             return true;
         }
     }
