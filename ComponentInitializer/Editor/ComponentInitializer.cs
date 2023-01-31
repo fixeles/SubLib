@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
-namespace UtilsSubmodule.ComponentInitializer.Editor
+namespace SubLib.ComponentInitializer.Editor
 {
     [InitializeOnLoad]
     public class ComponentInitializer

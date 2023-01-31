@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UtilsSubmodule.ObjectPool
+namespace SubLib.ObjectPool
 {
     [System.Serializable]
     public struct ParticlesPool

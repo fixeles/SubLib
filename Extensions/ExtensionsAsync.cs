@@ -4,7 +4,7 @@ using ExtensionsMain;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UtilsSubmodule.Extensions
+namespace SubLib.Extensions
 {
     public static class ExtensionsAsync
     {

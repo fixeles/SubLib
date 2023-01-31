@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace UtilsSubmodule.ComponentInitializer
+namespace SubLib.ComponentInitializer
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class ComponentDependency : Attribute

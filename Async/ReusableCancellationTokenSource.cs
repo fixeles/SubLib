@@ -1,6 +1,6 @@
 using System.Threading;
 
-namespace UtilsSubmodule.Async
+namespace SubLib.Async
 {
     public class ReusableCancellationTokenSource
     {

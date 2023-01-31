@@ -1,10 +1,10 @@
 ﻿using Cysharp.Threading.Tasks;
 using ExtensionsMain;
 using UnityEngine;
-using UtilsSubmodule.Async;
-using UtilsSubmodule.Extensions;
+using SubLib.Async;
+using SubLib.Extensions;
 
-namespace UtilsSubmodule
+namespace SubLib
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class FadingUI : MonoBehaviour

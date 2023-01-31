@@ -8,7 +8,7 @@ using ExtensionsMain;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace UtilsSubmodule
+namespace SubLib
 {
     public static class Utils
     {

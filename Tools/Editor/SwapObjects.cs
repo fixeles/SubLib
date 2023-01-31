@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace UtilsSubmodule.Tools.Editor
+namespace SubLib.Tools.Editor
 {
     public class SwapObjects : ScriptableWizard
     {

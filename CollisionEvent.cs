@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace UtilsSubmodule
+namespace SubLib
 {
     [RequireComponent(typeof(Collider))]
     public class CollisionEvent : MonoBehaviour

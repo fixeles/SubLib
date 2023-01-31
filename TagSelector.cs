@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace UtilsSubmodule
+namespace SubLib
 {
     public class TagSelectorAttribute : PropertyAttribute
     {

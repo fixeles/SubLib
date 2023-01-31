@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace UtilsSubmodule.Async
+namespace SubLib.Async
 {
     public class Timer
     {
