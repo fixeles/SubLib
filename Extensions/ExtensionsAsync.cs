@@ -11,10 +11,11 @@ namespace SubLib.Extensions
         public static async UniTask FadeAsync(this CanvasGroup group, CancellationToken token, float endValue,
             float duration = 0.1f)
         {
+            duration = Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
             float transition = 0;
             while (transition < 1)
             {
-                transition += Time.deltaTime / Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
+                transition += Time.deltaTime / duration;
                 group.alpha = Mathf.Lerp(group.alpha, endValue, transition);
                 await UniTask.Yield();
                 if (token.IsCancellationRequested) return;
@@ -24,11 +25,12 @@ namespace SubLib.Extensions
         public static async UniTask FadeAsync(this Image image, CancellationToken token, float endValue,
             float duration = 0.1f)
         {
+            duration = Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
             var color = image.color;
             float transition = 0;
             while (transition < 1)
             {
-                transition += Time.deltaTime / Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
+                transition += Time.deltaTime / duration;
                 color.a = Mathf.Lerp(color.a, endValue, transition);
                 image.color = color;
                 await UniTask.Yield();

@@ -21,14 +21,20 @@ namespace SubLib
             _cts = new(UniTaskCancellationExtensions.GetCancellationTokenOnDestroy(this));
         }
 
-        public async void SwitchActive(bool value)
+        public async UniTaskVoid SwitchActive(bool value, float customDuration)
         {
             var token = _cts.Create();
 
             if (value) gameObject.SetActive(true);
             _group.interactable = value;
-            await _group.FadeAsync(token, value ? 1 : 0, _fadeDuration);
+            _group.blocksRaycasts = value;
+            await _group.FadeAsync(token, value ? 1 : 0, customDuration);
             if (!value) gameObject.SetActive(false);
+        }
+
+        public void SwitchActive(bool value)
+        {
+            SwitchActive(value, _fadeDuration).Forget();
         }
 
         private void OnValidate()
