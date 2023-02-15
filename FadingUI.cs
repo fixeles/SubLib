@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using ExtensionsMain;
+using Game.Scripts.Attributes;
 using UnityEngine;
 using SubLib.Async;
 using SubLib.Extensions;
