@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 
-public class Statable
+public class StateMachine
 {
     protected Dictionary<UnitState, IState> AwailableStates;
     private IState _currentState;
 
-    public Statable(Dictionary<UnitState, IState> awailableStates, UnitState defaultState)
+    public StateMachine(Dictionary<UnitState, IState> awailableStates, UnitState defaultState)
     {
         AwailableStates = awailableStates;
         SetState(defaultState);
