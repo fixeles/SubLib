@@ -1,10 +1,10 @@
 ﻿using Cysharp.Threading.Tasks;
 using ExtensionsMain;
-using UnityEngine;
 using SubLib.Async;
 using SubLib.Extensions;
+using UnityEngine;
 
-namespace SubLib
+namespace SubLib.UI
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class FadingUI : MonoBehaviour
@@ -21,7 +21,7 @@ namespace SubLib
             _cts = new(UniTaskCancellationExtensions.GetCancellationTokenOnDestroy(this));
         }
 
-        public async UniTaskVoid SwitchActive(bool value, float customDuration)
+        public async UniTask SwitchActive(bool value, float customDuration)
         {
             var token = _cts.Create();
 
@@ -32,9 +32,9 @@ namespace SubLib
             if (!value) gameObject.SetActive(false);
         }
 
-        public void SwitchActive(bool value)
+        public async UniTask SwitchActive(bool value)
         {
-            SwitchActive(value, _fadeDuration).Forget();
+            await SwitchActive(value, _fadeDuration);
         }
 
         private void OnValidate()
