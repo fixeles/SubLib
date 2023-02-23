@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72852224573e1cd46be850a8237e44c4, type: 3}
   m_Name: DefaulTransition
   m_EditorClassIdentifier: 
-  <TransitionDuration>k__BackingField: 0.5
+  <Duration>k__BackingField: 0.5
   <MoveCurve>k__BackingField:
     serializedVersion: 2
     m_Curve:
@@ -76,15 +76,15 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 27.918264
-      outSlope: 27.918264
+      inSlope: 15.394398
+      outSlope: 15.394398
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.046648975
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 0.35
-      value: 4.9771852
+      value: 2
       inSlope: -0.24583268
       outSlope: -0.24583268
       tangentMode: 0
@@ -94,11 +94,11 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: -19.66301
-      outSlope: -19.66301
+      inSlope: -8.275747
+      outSlope: -8.275747
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.043809142
+      inWeight: 0.41025642
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
