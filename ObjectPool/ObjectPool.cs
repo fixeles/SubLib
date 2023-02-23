@@ -34,6 +34,18 @@ namespace SubLib.ObjectPool
         }
 #endif
 
+
+        public int GetActiveObjectsCount()
+        {
+            int count = 0;
+            foreach (var item in _pool)
+            {
+                if (item.gameObject.activeSelf) count++;
+            }
+
+            return count;
+        }
+
         public T Get(in Vector3 position, in Quaternion rotation)
         {
             var pooledObject = _pool.FirstOrDefault(item => !item.gameObject.activeSelf);
