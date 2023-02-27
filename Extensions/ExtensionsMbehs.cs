@@ -14,6 +14,7 @@ namespace ExtensionsMbehs
             {
                 if (clip.name.Equals(name)) return clip;
             }
+
             return null;
         }
 
@@ -47,6 +48,7 @@ namespace ExtensionsMbehs
 
         public static T GetNearestObject<T>(this List<T> list, Vector3 target) where T : MonoBehaviour
         {
+            if (list.Count == 0) return null;
             T nearestObject = list[0];
             float minDistance = float.MaxValue;
 
@@ -85,12 +87,14 @@ namespace ExtensionsMbehs
                 if (field.IsStatic) continue;
                 field.SetValue(dst, field.GetValue(original));
             }
+
             var props = type.GetProperties();
             foreach (var prop in props)
             {
                 if (!prop.CanWrite || !prop.CanWrite || prop.Name == "name") continue;
                 prop.SetValue(dst, prop.GetValue(original, null), null);
             }
+
             return dst as T;
         }
 
@@ -102,5 +106,3 @@ namespace ExtensionsMbehs
         }
     }
 }
-
-
