@@ -164,5 +164,16 @@ namespace ExtensionsMain
             Debug.Log(item + " removed from " + list);
             return list;
         }
+
+        public static List<T> GetActiveItems<T>(this IEnumerable<T> collection) where T : Behaviour
+        {
+            var activeItems = new List<T>();
+            foreach (var item in collection)
+            {
+                if (item.isActiveAndEnabled) activeItems.Add(item);
+            }
+
+            return activeItems;
+        }
     }
 }
