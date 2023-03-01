@@ -165,12 +165,12 @@ namespace ExtensionsMain
             return list;
         }
 
-        public static List<T> GetActiveItems<T>(this IEnumerable<T> collection) where T : Behaviour
+        public static List<T> GetActiveItems<T>(this IEnumerable<T> collection) where T : Component
         {
             var activeItems = new List<T>();
             foreach (var item in collection)
             {
-                if (item.isActiveAndEnabled) activeItems.Add(item);
+                if (item.gameObject.activeInHierarchy) activeItems.Add(item);
             }
 
             return activeItems;
