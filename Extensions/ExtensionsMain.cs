@@ -1,9 +1,8 @@
-namespace ExtensionsMain
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace SubLib.Extensions
 {
-    using System.Collections.Generic;
-    using UnityEngine;
-
-
     public static class ExtensionsMain
     {
         public static T GetRandomElement<T>(this List<T> collection)

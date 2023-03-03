@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using SubLib.Extensions;
 using UnityEngine;
 using UnityEngine.AI;
-using ExtensionsMain;
 
-namespace ExtensionsMbehs
+namespace SubLib.Extensions
 {
     public static class ExtensionsMbehs
     {
@@ -46,7 +46,8 @@ namespace ExtensionsMbehs
             return true;
         }
 
-        public static T GetNearestObject<T>(this List<T> list, Vector3 target) where T : MonoBehaviour
+        public static T GetNearestObject<T>(this List<T> list, Vector3 target)
+            where T : Behaviour
         {
             if (list.Count == 0) return null;
             T nearestObject = list[0];

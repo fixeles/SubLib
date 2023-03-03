@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using ExtensionsMain;
+using SubLib.Extensions;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
