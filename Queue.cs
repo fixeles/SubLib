@@ -6,6 +6,7 @@ namespace SubLib
     public class Queue<T>
     {
         public event Action OnQueueChangeEvent;
+        public event Action OnDequeueEvent;
         private readonly int _maxCapacity;
         private readonly List<T> _items;
 
@@ -37,6 +38,7 @@ namespace SubLib
             T item = _items[0];
             _items.RemoveAt(0);
             OnQueueChangeEvent?.Invoke();
+            OnDequeueEvent?.Invoke();
             return item;
         }
 
