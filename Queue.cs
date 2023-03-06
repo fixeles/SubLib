@@ -22,12 +22,10 @@ namespace SubLib
         }
 
 
-        public bool Enqueue(T item)
+        public void Enqueue(T item)
         {
-            if (!HasSpace) return false;
             _items.Add(item);
             OnQueueChangeEvent?.Invoke();
-            return true;
         }
 
         public T Dequeue()
