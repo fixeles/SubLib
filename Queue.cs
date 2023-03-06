@@ -13,6 +13,8 @@ namespace SubLib
         public T[] Items => _items.ToArray();
         public bool HasSpace => _items.Count < _maxCapacity;
 
+        public int Count => _items.Count;
+
         public Queue(int maxCapacity)
         {
             _maxCapacity = maxCapacity;

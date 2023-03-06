@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SubLib.Extensions;
 using UnityEngine;
 using UnityEngine.AI;
@@ -42,44 +43,21 @@ namespace SubLib.Extensions
 
         public static bool IsReached(this NavMeshAgent agent, Vector3 target)
         {
-            if (agent.transform.DistanceTo(target) > agent.stoppingDistance) return false;
-            return true;
+            return (agent.transform.DistanceTo(target) < agent.stoppingDistance);
         }
 
-        public static T GetNearestObject<T>(this List<T> list, Vector3 target)
-            where T : Behaviour
+        public static T GetNearestObject<T>(this List<T> list, Vector3 target) where T : Behaviour
         {
             if (list.Count == 0) return null;
-            T nearestObject = list[0];
-            float minDistance = float.MaxValue;
-
-            foreach (var item in list)
-            {
-                float distance = item.transform.DistanceTo(target);
-                if (distance > minDistance) continue;
-
-                minDistance = distance;
-                nearestObject = item;
-            }
-
-            return nearestObject;
+            return list.Aggregate((x, y) =>
+                (x.transform.position - target).sqrMagnitude < (y.transform.position - target).sqrMagnitude
+                    ? x
+                    : y);
         }
-
-        /*  public static T CopyComponent<T>(this T original, GameObject destination) where T : Component
-          {
-              System.Type type = original.GetType();
-              Component copy;
-              if (!destination.TryGetComponent(type, out copy)) destination.AddComponent(type);
-
-              System.Reflection.FieldInfo[] fields = type.GetFields();
-              foreach (System.Reflection.FieldInfo field in fields)
-                  field.SetValue(copy, field.GetValue(original));
-              return copy as T;
-          }*/
 
         public static T CopyComponent<T>(T original, GameObject destination) where T : Component
         {
-            System.Type type = original.GetType();
+            Type type = original.GetType();
             var dst = destination.GetComponent(type) as T;
             if (!dst) dst = destination.AddComponent(type) as T;
             var fields = type.GetFields();
@@ -96,7 +74,7 @@ namespace SubLib.Extensions
                 prop.SetValue(dst, prop.GetValue(original, null), null);
             }
 
-            return dst as T;
+            return dst;
         }
 
         public static void CopyTransform(this Transform copy, Transform to)
