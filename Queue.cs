@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace SubLib
 {
-    public class Queue<T>
+    public class Queue<T> where T : class
     {
         public event Action OnQueueChangeEvent;
         public event Action OnDequeueEvent;
@@ -46,7 +47,8 @@ namespace SubLib
         {
             if (_items.Count == 0)
             {
-                throw new InvalidOperationException("Queue is empty");
+                Debug.Log("Queue is empty");
+                return null;
             }
 
             return _items[0];
