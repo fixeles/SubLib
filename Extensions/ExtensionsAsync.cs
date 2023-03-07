@@ -233,7 +233,8 @@ namespace SubLib.Extensions
             }
         }
 
-        public static async UniTask MoveAsync(this Transform transform, Transform target, int speed, bool look = false,
+        public static async UniTask MoveWithSpeedAsync(this Transform transform, Transform target, float speed,
+            bool look = false,
             CancellationToken token = default)
         {
             float transition = 0;
