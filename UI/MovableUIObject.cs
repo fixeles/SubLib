@@ -30,7 +30,7 @@ namespace SubLib.UI
         private void LateUpdate()
         {
             _cachedTransform.position = dampingSpeed == 0
-                ? Target.position
+                ? StaticData.Instance.MainCamera.WorldToScreenPoint(Target.position)
                 : Vector3.Lerp(_cachedTransform.position,
                     StaticData.Instance.MainCamera.WorldToScreenPoint(Target.position), Time.deltaTime * dampingSpeed);
         }
