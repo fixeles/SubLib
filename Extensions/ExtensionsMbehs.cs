@@ -35,15 +35,32 @@ namespace SubLib.Extensions
             }
         }
 
-        public static bool IsReached(this NavMeshAgent agent)
-        {
-            if (agent.transform.DistanceTo(agent.destination) < agent.stoppingDistance) return true;
-            return false;
-        }
+        public static bool IsReached(this NavMeshAgent agent) =>
+            agent.transform.DistanceTo(agent.destination) < agent.stoppingDistance;
 
-        public static bool IsReached(this NavMeshAgent agent, Vector3 target)
+
+        public static bool IsReached(this NavMeshAgent agent, Vector3 target) =>
+            agent.transform.DistanceTo(target) < agent.stoppingDistance;
+
+
+        public static Vector3 FindPointOnPath(this NavMeshAgent agent, Vector3 target, float distanceFromEnd)
         {
-            return (agent.transform.DistanceTo(target) < agent.stoppingDistance);
+            if (distanceFromEnd <= 0) return target;
+            var path = new NavMeshPath();
+            agent.CalculatePath(target, path);
+
+            var corners = path.corners;
+
+            for (int i = corners.Length - 2; i >= 0; i--)
+            {
+                float segmentDistance = (corners[i] - corners[i + 1]).magnitude;
+                if (segmentDistance >= distanceFromEnd)
+                    return Vector3.Lerp(corners[i], corners[i + 1], distanceFromEnd / segmentDistance);
+
+                distanceFromEnd -= segmentDistance;
+            }
+
+            return corners[0];
         }
 
         public static T GetNearestObject<T>(this List<T> list, Vector3 target) where T : Behaviour
