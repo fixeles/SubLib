@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Game.Scripts.Data;
 using UnityEngine;
 
@@ -12,18 +13,15 @@ namespace SubLib.UI
 
         [SerializeField, Min(0)] private int dampingSpeed = 0;
 
-        private void Awake()
+
+        private async void OnEnable()
         {
             _cachedTransform = transform;
+            await UniTask.Yield(PlayerLoopTiming.PreUpdate);
+            
             _cachedTransform.SetParent(_customParentOnEnable
                 ? _customParentOnEnable
                 : LevelData.Instance.MainCanvas.transform);
-
-            _cachedTransform.localPosition = new Vector3(-3000, -3000, 0f);
-        }
-
-        private void OnEnable()
-        {
             _cachedTransform.position = StaticData.Instance.MainCamera.WorldToScreenPoint(Target.position);
         }
 
