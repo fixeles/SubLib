@@ -55,7 +55,7 @@ namespace SubLib.Extensions
             {
                 float segmentDistance = (corners[i] - corners[i + 1]).magnitude;
                 if (segmentDistance >= distanceFromEnd)
-                    return Vector3.Lerp(corners[i], corners[i + 1], distanceFromEnd / segmentDistance);
+                    return Vector3.Lerp(corners[i + 1], corners[i], distanceFromEnd / segmentDistance);
 
                 distanceFromEnd -= segmentDistance;
             }
