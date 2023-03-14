@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SubLib
@@ -7,21 +8,20 @@ namespace SubLib
     public class Queue<T> where T : class
     {
         public event Action OnQueueChangeEvent;
-        public event Action OnDequeueEvent;
-        private readonly int _maxCapacity;
-        private readonly List<T> _items;
+        private List<T> _items = new();
 
         public T[] Items => _items.ToArray();
-        public bool HasSpace => _items.Count < _maxCapacity;
 
         public int Count => _items.Count;
 
-        public Queue(int maxCapacity)
+        public void Sort(IComparer<T> comparer)
         {
-            _maxCapacity = maxCapacity;
-            _items = new List<T>(_maxCapacity);
-        }
+            var sortedList = _items.OrderBy(x => x, comparer).ToList();
+            if (sortedList == _items || sortedList.Count == 0) return;
 
+            _items = sortedList;
+            OnQueueChangeEvent?.Invoke();
+        }
 
         public void Enqueue(T item)
         {
@@ -39,7 +39,6 @@ namespace SubLib
             T item = _items[0];
             _items.RemoveAt(0);
             OnQueueChangeEvent?.Invoke();
-            OnDequeueEvent?.Invoke();
             return item;
         }
 
